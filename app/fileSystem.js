@@ -1,4 +1,4 @@
-// app/fs.js
+// /app/fs.js
 
 // First example
 const fs = require('fs')

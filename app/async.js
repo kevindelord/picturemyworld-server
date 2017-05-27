@@ -1,4 +1,4 @@
-// app/async.js
+// /app/async.js
 
 // TODO: do more research about async and Promises.
 
