@@ -1,4 +1,5 @@
 // /app/fs.js
+'use strict';
 
 // First example
 const fs = require('fs')

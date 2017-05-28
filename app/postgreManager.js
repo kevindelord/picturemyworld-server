@@ -1,4 +1,5 @@
 // /app/postgreManager.js
+'use strict';
 
 const pg = require('pg')
 const config = require('../config/config')
@@ -23,6 +24,25 @@ function createUser(request, response) {
 			}	
 		})
 	}) 
+}
+
+function getUserByEmail(email, callback) {
+	pg.connect(config.postgre.connectURL, function (error, client, done) {
+		if (error) {
+			return callback(error)
+		}
+
+		const query = `SELECT * FROM users WHERE (email == '${email}');`
+		client.query(query, function (error, result) {
+			done()
+
+			if (error) {
+				return callback(error)
+			} else {
+				return callback(result)
+			}
+		})
+	})
 }
 
 function getUsers(request, response) {

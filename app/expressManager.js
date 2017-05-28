@@ -1,36 +1,25 @@
 // /app/expressManager.js
+'use strict';
 
-const path = require('path')  
-const express = require('express')  
-const exphbs = require('express-handlebars')
+const express = require('express')
+
 const port = 3000
 const bodyParser = require('body-parser')
-const postgreManager = require('./postgreManager')
 const app = express()
 
 // Documentation: https://www.npmjs.com/package/body-parser
 // Use BodyParser to parse the body of a request
 app.use(bodyParser.urlencoded({extended: true}));
-  
-// Documentation: https://www.npmjs.com/package/express-handlebars
-app.engine('.hbs', exphbs({  
-    defaultLayout: 'main',
-    extname: '.hbs',
-    layoutsDir: path.join(__dirname, 'views/layouts')
-}))
-app.set('view engine', '.hbs')  
-app.set('views', path.join(__dirname, 'views'))
 
-app.get('/', (request, response) => {  
-    response.render('home', {
-        name: 'Test Kevin'
-    })
-})
+// Init authentication through Passportjs.
+require('./authentication').init(app)
 
-// Setup users endpoint
-app.post('/users', postgreManager.createUser)
-app.get('/users', postgreManager.getUsers)
-app.get('/posts', postgreManager.getPosts)
+// Setup basic html views
+require('./views').init(app)
+
+// Setup endpoints.
+require('./users').init(app)
+require('./posts').init(app)
 
 function start () {
 	app.listen(port, (err) => {  

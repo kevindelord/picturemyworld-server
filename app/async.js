@@ -1,8 +1,10 @@
 // /app/async.js
+'use strict';
 
 // TODO: do more research about async and Promises.
 
 // Documentation: http://caolan.github.io/async/
+// nom install async --save
 
 // Second
 const async = require('async')

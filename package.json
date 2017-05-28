@@ -18,11 +18,12 @@
   "author": "Kevin Delord",
   "license": "ISC",
   "dependencies": {
-    "async": "^2.4.1",
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
     "express-handlebars": "^3.0.0",
+    "express-session": "^1.15.3",
     "lodash": "^4.17.4",
+    "passport": "^0.3.2",
     "pg": "^6.2.3"
   }
 }
