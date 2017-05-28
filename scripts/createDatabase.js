@@ -7,9 +7,10 @@ const manager = require('../app/postgreManager')
 
 var query = {};
 query.createdb = `CREATE DATABASE ${config.postgre.database}` 
-query.createUsersTable = "CREATE TABLE USERS(	ID INT PRIMARY KEY NOT NULL,\
+query.createUsersTable = "CREATE TABLE USERS(	ID SERIAL PRIMARY KEY UNIQUE NOT NULL,\
+												EMAIL TEXT UNIQUE NOT NULL,\
 												USERNAME TEXT NOT NULL,\
-												EMAIL TEXT NOT NULL);"
+												PASSWORD TEXT NOT NULL);"
 
 query.createPostsTable = "CREATE TABLE POSTS(	ID INT PRIMARY KEY NOT NULL,\
 												TITLE CHAR(60) NOT NULL,\

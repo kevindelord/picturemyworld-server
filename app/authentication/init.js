@@ -18,32 +18,37 @@ passport.deserializeUser(function (email, callback) {
 })
 
 function authenticationMiddleware () {
-  return function (req, res, next) {
-    if (req.isAuthenticated()) {
-      return next()
+    return function (req, res, next) {
+        if (req.isAuthenticated()) {
+            return next()
+        }
+        res.redirect('/')
     }
-    res.redirect('/')
-  }
+}
+
+function verifyUser(username, password, done) {
+    console.log(username)
+    console.log(password)
+    return done(null, false)
+    // postgreManager.getUserByEmail(email, function (err, user) {
+    //     if (err) {
+    //         return done(err)
+    //     }
+    //     if (!user) {
+    //         return done(null, false)
+    //     }
+    //     if (password !== user.password) {
+    //         return done(null, false)
+    //     }
+    //     return done(null, user)
+    // })
 }
 
 function initPassport (app) {
-    passport.use(new LocalStrategy(
-    function(username, password, done) {
-        postgreManager.getUserByEmail(email, function (err, user) {
-            if (err) {
-                return done(err)
-            }
-            if (!user) {
-                return done(null, false)
-            }
-            if (password !== user.password) {
-                return done(null, false)
-            }
-                return done(null, user)
-        })
-    }))
+    passport.use(new LocalStrategy(verifyUser))
     passport.authenticationMiddleware = authenticationMiddleware
 
+    // Documentation: https://github.com/expressjs/session
     app.use(session({
         secret: config.passport.secretKey,
         resave: false,
