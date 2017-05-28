@@ -30,6 +30,7 @@ app.get('/', (request, response) => {
 // Setup users endpoint
 app.post('/users', postgreManager.createUser)
 app.get('/users', postgreManager.getUsers)
+app.get('/posts', postgreManager.getPosts)
 
 function start () {
 	app.listen(port, (err) => {  

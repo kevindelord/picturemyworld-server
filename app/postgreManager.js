@@ -4,7 +4,6 @@ const pg = require('pg')
 const config = require('../config/config')
 
 function createUser(request, response) {
-
 	const user = request.body
 	pg.connect(config.postgre.connectURL, function (error, client, done) {
 		if (error) {
@@ -27,7 +26,6 @@ function createUser(request, response) {
 }
 
 function getUsers(request, response) {
-
 	pg.connect(config.postgre.connectURL, function (error, client, done) {
 		if (error) {
 			return response.status(500).send(`ERROR: ${error}`)
@@ -45,5 +43,24 @@ function getUsers(request, response) {
 	})
 }
 
+function getPosts(request, response) {
+	pg.connect(config.postgre.connectURL, function (error, client, done) {
+		if (error) {
+			return response.status(500).send(`ERROR: ${error}`)
+		}
+
+		client.query("SELECT * FROM posts", function (error, result) {
+			done()
+
+			if (error) {
+				return response.status(500).send(`ERROR: ${error}`)
+			} else {
+				return response.json(result.rows)
+			}
+		})
+	})
+}
+
 module.exports.createUser = createUser
 module.exports.getUsers = getUsers
+module.exports.getPosts = getPosts
