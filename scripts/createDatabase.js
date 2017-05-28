@@ -20,14 +20,6 @@ query.createPostsTable = "CREATE TABLE POSTS(	ID INT PRIMARY KEY NOT NULL,\
 												DATE DATE NOT NULL,\
 												RATIO DECIMAL NOT NULL);"
 
-function createTables(client, done) {
-	console.log("Create 'users' table...")
-	manager.executeQueries(client, [query.createUsersTable, query.createPostsTable], 0, function (client) {
-		done()
-		process.exit(0)
-	})
-}
-
 function connectDatabase(next) {
 	console.log("Initial connection to PostgreSQL database...")
 	manager.connect(config.postgre.initURL, function (client, done) {
@@ -40,5 +32,12 @@ function connectDatabase(next) {
 	})
 }
 
-// Init, create and connect to database, then create tables.
-connectDatabase(createTables)
+// Init, create and connect to database
+connectDatabase(function (client, done) {
+	// Now create tables.
+	console.log("Create 'users' table...")
+	manager.executeQueries(client, [query.createUsersTable, query.createPostsTable], 0, function (client) {
+		done()
+		process.exit(0)
+	})
+})
