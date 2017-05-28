@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "createDatabase": "node scripts/createDatabase.js"
+    "createDB": "node scripts/createDatabase.js",
+    "populateDB": "node scripts/populateDatabase.js",
+    "deleteDB": "node scripts/deleteDatabase.js"
   },
   "keywords": [
     "travel",

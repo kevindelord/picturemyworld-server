@@ -4,7 +4,8 @@
 
 ### Script to setup and configure database
 - [x] One script to create the database, tables and columns.
-- [ ] One script to populate the database with mockup data.
+- [x] One script to populate the database with mockup data.
+- [x] To remove the database.
 
 ### User connections
 - [ ] Properly register users with passwords and sessions.

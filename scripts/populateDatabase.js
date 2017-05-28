@@ -1,5 +1,4 @@
 #! /usr/bin/env node
-'use strict'
 
 const pg = require('pg')
 const config = require('../config/config')
@@ -16,7 +15,8 @@ query.insertPost = "INSERT INTO POSTS(ID, TITLE, DESCRIPTION, LOCATION, LAT, LNG
 
 // Connect to existing database and then insert values.
 console.log("Connect to PostgreSQL database...")
-manager.connect(config.postgre.connectURL, function (client, done) {	
+manager.connect(config.postgre.connectURL, function (client, done) {
+	console.log("Poulate database...")
 	const queries = [query.insertUser, query.insertPost]
 	manager.executeQueries(client, queries, 0, function (client) {
 		done()
