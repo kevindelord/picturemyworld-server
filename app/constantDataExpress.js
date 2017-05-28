@@ -11,7 +11,7 @@ const app = express()
 
 // Documentation: https://www.npmjs.com/package/body-parser
 // Use BodyParser to parse the body of a request
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({extended: true}));
   
 // Documentation: https://www.npmjs.com/package/express-handlebars
 app.engine('.hbs', exphbs({  
