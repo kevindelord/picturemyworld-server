@@ -7,5 +7,6 @@ Framework: Node.js
 Execute:
 
 ```
+npm install
 npm start
 ```
