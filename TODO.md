@@ -3,8 +3,8 @@
 ## Node.js Server
 
 ### Script to setup and configure database
-- [ ] One script to create the database, tables and columns.
-- [ ] One script to populate with test data the database.
+- [x] One script to create the database, tables and columns.
+- [ ] One script to populate the database with mockup data.
 
 ### User connections
 - [ ] Properly register users with passwords and sessions.
