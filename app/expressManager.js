@@ -1,4 +1,4 @@
-// /app/postgreExpress.js
+// /app/expressManager.js
 
 const path = require('path')  
 const express = require('express')  
