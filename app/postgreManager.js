@@ -1,4 +1,4 @@
-// /app/postgreManager.js
+// file:/app/postgreManager.js
 'use strict';
 
 const pg = require('pg')

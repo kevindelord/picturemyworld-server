@@ -1,4 +1,5 @@
 #! /usr/bin/env node
+'use strict';
 
 const pg = require('pg')
 const config = require('../config/config')

@@ -1,4 +1,4 @@
-// /app/index.js
+// file:/app/index.js
 'use strict';
 
 const express = require('express')
