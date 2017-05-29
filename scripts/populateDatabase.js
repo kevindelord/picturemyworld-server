@@ -1,13 +1,14 @@
 #! /usr/bin/env node
 'use strict';
 
-const config = require('../config/config')
-const manager = require('./postgreManager')
+const config 	= require('../config/config')
+const manager 	= require('./postgreManager')
+const bcrypt 	= require('bcryptjs');
 
-// TODO: generate password hash with bcrypt.
+var passwordHash = bcrypt.hashSync('superpass', config.bcrypt.seendLength);
 
 var query = {};
-query.insertUser = "INSERT INTO USERS(USERNAME, EMAIL, PASSWORD) VALUES ('John Doe', 'test@gmail.com', 'this_is_not_a_generated_hash');"
+query.insertUser = `INSERT INTO USERS(USERNAME, EMAIL, PASSWORD) VALUES ('John Doe', 'test@gmail.com', '${passwordHash}');`
 query.insertPost = "INSERT INTO POSTS(ID, TITLE, DESCRIPTION, LOCATION, LAT, LNG, DATE, RATIO)\
 								VALUES (1, 'Lovely Title', 'That was good', 'London Bridge', 0.34567, -64.4356, '2017-01-08', 0.75);"
 
