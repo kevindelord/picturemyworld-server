@@ -1,12 +1,10 @@
 #! /usr/bin/env node
+'use strict';
 
-const pg = require('pg')
 const config = require('../config/config')
-const exec = require('child_process').exec; 
-const manager = require('../app/postgreManager')
+const manager = require('./postgreManager')
 
 var query = {};
-
 query.deleteDatabase = `DROP DATABASE ${config.postgre.database};`
 
 // Connect to existing database and then insert values.

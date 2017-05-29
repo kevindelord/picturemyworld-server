@@ -35,3 +35,4 @@ jspm_packages
 
 # Custom
 config/config.js
+*.DS_Store

@@ -1,16 +1,20 @@
 #! /usr/bin/env node
+'use strict';
 
-const pg = require('pg')
 const config = require('../config/config')
+const manager = require('./postgreManager')
 const exec = require('child_process').exec;
-const manager = require('../app/postgreManager')
+
+var shellCommand = {};
+shellCommand.createSessionTable = `psql ${config.postgre.database} < node_modules/connect-pg-simple/table.sql`
 
 var query = {};
-query.createdb = `CREATE DATABASE ${config.postgre.database}` 
-query.createUsersTable = "CREATE TABLE USERS(	ID INT PRIMARY KEY NOT NULL,\
+query.createdb = `CREATE DATABASE ${config.postgre.database}`
+query.addUUIDExtension = 'CREATE EXTENSION "uuid-ossp";'
+query.createUsersTable = "CREATE TABLE USERS(	ID UUID PRIMARY KEY DEFAULT uuid_generate_v1mc(),\
+												EMAIL TEXT UNIQUE NOT NULL,\
 												USERNAME TEXT NOT NULL,\
-												EMAIL TEXT NOT NULL);"
-
+												PASSWORD TEXT NOT NULL);"
 query.createPostsTable = "CREATE TABLE POSTS(	ID INT PRIMARY KEY NOT NULL,\
 												TITLE CHAR(60) NOT NULL,\
 												DESCRIPTION TEXT NOT NULL,\
@@ -20,14 +24,7 @@ query.createPostsTable = "CREATE TABLE POSTS(	ID INT PRIMARY KEY NOT NULL,\
 												DATE DATE NOT NULL,\
 												RATIO DECIMAL NOT NULL);"
 
-function createTables(client, done) {
-	console.log("Create 'users' table...")
-	manager.executeQueries(client, [query.createUsersTable, query.createPostsTable], 0, function (client) {
-		done()
-		process.exit(0)
-	})
-}
-
+// Connect to the default database, create and connect to the new one.
 function connectDatabase(next) {
 	console.log("Initial connection to PostgreSQL database...")
 	manager.connect(config.postgre.initURL, function (client, done) {
@@ -40,5 +37,24 @@ function connectDatabase(next) {
 	})
 }
 
-// Init, create and connect to database, then create tables.
-connectDatabase(createTables)
+// Init, create and connect to database.
+connectDatabase(function (client, done) {
+	console.log("Create tables...")
+	const queries = [
+		query.addUUIDExtension,
+		query.createUsersTable,
+		query.createPostsTable
+	]
+	// Execute queries to create tables.
+	manager.executeQueries(client, queries, 0, function (client) {
+		done()
+		exec(shellCommand.createSessionTable, (error, stdout, stderr) => {
+			if (error) {
+				console.log(`stderr: ${stderr}`);
+				console.error(`exec error: ${error}`);
+				return;
+			}
+			process.exit(0)
+		});
+	})
+})

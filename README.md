@@ -7,5 +7,7 @@ Framework: Node.js
 Execute:
 
 ```
+npm install
+npm run createDB
 npm start
 ```
