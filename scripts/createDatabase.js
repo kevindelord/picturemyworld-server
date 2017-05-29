@@ -40,9 +40,13 @@ function connectDatabase(next) {
 
 // Init, create and connect to database.
 connectDatabase(function (client, done) {
-	// Now create tables.
-	console.log("Create 'users' table...")
-	const queries = [query.addUUIDExtension, query.createUsersTable, query.createPostsTable]
+	console.log("Create tables...")
+	const queries = [
+		query.addUUIDExtension,
+		query.createUsersTable,
+		query.createPostsTable
+	]
+	// Execute queries to create tables.
 	manager.executeQueries(client, queries, 0, function (client) {
 		done()
 		process.exit(0)
