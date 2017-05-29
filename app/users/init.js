@@ -24,46 +24,19 @@ function createUser(request, response) {
 	});
 }
 
+function getUsers(request, response) {
+	manager.getUsers(function (error, result) {
+		if (error) {
+			return response.status(500).send(`ERROR: ${error}`)
+		} else {
+			return response.json(result)
+		}
+	})
+}
+
 function initUsers (app) {
 	app.post('/users', createUser)
-	// app.get('/users', getUsers)
+	app.get('/users', getUsers)
 }
 
 module.exports = initUsers
-
-// function getUserByEmail(email, callback) {
-// 	pg.connect(config.postgre.connectURL, function (error, client, done) {
-// 		if (error) {
-// 			return callback(error)
-// 		}
-
-// 		const query = `SELECT * FROM users WHERE (email == '${email}');`
-// 		client.query(query, function (error, result) {
-// 			done()
-
-// 			if (error) {
-// 				return callback(error)
-// 			} else {
-// 				return callback(result)
-// 			}
-// 		})
-// 	})
-// }
-
-// function getUsers(request, response) {
-// 	pg.connect(config.postgre.connectURL, function (error, client, done) {
-// 		if (error) {
-// 			return response.status(500).send(`ERROR: ${error}`)
-// 		}
-
-// 		client.query("SELECT * FROM users", function (error, result) {
-// 			done()
-
-// 			if (error) {
-// 				return response.status(500).send(`ERROR: ${error}`)
-// 			} else {
-// 				return response.json(result.rows)
-// 			}
-// 		})
-// 	})
-// }

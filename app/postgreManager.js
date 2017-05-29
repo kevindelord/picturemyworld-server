@@ -5,80 +5,38 @@ const pg = require('pg')
 const config = require('../config/config')
 
 function createUser(user, callback) {
-	pg.connect(config.postgre.connectURL, function (error, client, done) {
-		if (error) {
-			// Pass the error to the express error handler
-			return callback(error)
-		}
-		const query = "INSERT INTO users (email, username, password) VALUES ($1, $2, $3);"
-		const parameters = [user.email, user.username, user.password]
-		client.query(query, parameters, function (error, result) {
-			// This done callback signals the pg driver that the connection can be closed or returned to the connection pool
-			done()
-		
-			if (error) {
-				// pass the error to the express error handler
-				return callback(error)
-			} else {
-				return callback()
-			}	
-		})
-	}) 
+	const query = "INSERT INTO users (email, username, password) VALUES ($1, $2, $3);"
+	const parameters = [user.email, user.username, user.password]
+	executeQueryWithParameters(query, parameters, callback)
 }
 
-function getUserByEmail(email, callback) {
-	pg.connect(config.postgre.connectURL, function (error, client, done) {
-		if (error) {
-			return callback(error)
-		}
+// function getUserByEmail(email, callback) {
+// 	pg.connect(config.postgre.connectURL, function (error, client, done) {
+// 		if (error) {
+// 			return callback(error)
+// 		}
 
-		const query = `SELECT * FROM users WHERE (email == '${email}');`
-		client.query(query, function (error, result) {
-			done()
+// 		const query = `SELECT * FROM users WHERE (email == '${email}');`
+// 		client.query(query, function (error, result) {
+// 			done()
 
-			if (error) {
-				return callback(error)
-			} else {
-				return callback(result)
-			}
-		})
-	})
+// 			if (error) {
+// 				return callback(error)
+// 			} else {
+// 				return callback(result)
+// 			}
+// 		})
+// 	})
+// }
+
+function getUsers(callback) {
+	const query = "SELECT * FROM users"
+	executeQueryWithParameters(query, null, callback)
 }
 
-function getUsers(request, response) {
-	pg.connect(config.postgre.connectURL, function (error, client, done) {
-		if (error) {
-			return response.status(500).send(`ERROR: ${error}`)
-		}
-
-		client.query("SELECT * FROM users", function (error, result) {
-			done()
-
-			if (error) {
-				return response.status(500).send(`ERROR: ${error}`)
-			} else {
-				return response.json(result.rows)
-			}
-		})
-	})
-}
-
-function getPosts(request, response) {
-	pg.connect(config.postgre.connectURL, function (error, client, done) {
-		if (error) {
-			return response.status(500).send(`ERROR: ${error}`)
-		}
-
-		client.query("SELECT * FROM posts", function (error, result) {
-			done()
-
-			if (error) {
-				return response.status(500).send(`ERROR: ${error}`)
-			} else {
-				return response.json(result.rows)
-			}
-		})
-	})
+function getPosts(callback) {
+	const query = "SELECT * FROM posts"
+	executeQueryWithParameters(query, null, callback)
 }
 
 function connect(url, next) {
@@ -88,6 +46,24 @@ function connect(url, next) {
 		} else {
 			next(client, done)
 		}
+	})
+}
+
+function executeQueryWithParameters(query, parameters, callback) {
+	// Connect to the database using the configured username, host and database name.
+	pg.connect(config.postgre.connectURL, function (error, client, done) {
+		if (error) {
+			return callback(error)
+		}
+		client.query(query, parameters, function (error, result) {
+			// Close the pg client.
+			done()
+			if (error) {
+				return callback(error)
+			} else {
+				return callback(null, result.rows)
+			}
+		})
 	})
 }
 
