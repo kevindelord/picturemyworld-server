@@ -20,6 +20,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.2",
+    "connect-pg-simple": "^4.2.0",
     "express": "^4.15.3",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.15.3",

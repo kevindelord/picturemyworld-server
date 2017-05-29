@@ -8,5 +8,6 @@ Execute:
 
 ```
 npm install
+npm run createDB
 npm start
 ```

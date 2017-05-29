@@ -2,11 +2,11 @@
 'use strict';
 
 function authenticationMiddleware () {
-	return function (request, result, next) {
+	return function (request, response, next) {
 		if (request.isAuthenticated()) {
 			return next()
 		} else {
-			return result.redirect('/')
+			return response.status(401).json({"status": 401, "message": "Unauthorized"})
 		}
 	}
 }

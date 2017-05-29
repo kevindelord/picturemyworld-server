@@ -8,9 +8,9 @@
 - [x] To remove the database.
 
 ### User connections
-- [ ] Properly register users with passwords and sessions.
-- [ ] Sign in users with passwords.
-- [ ] Logout users.
+- [x] Properly register users with passwords and sessions.
+- [x] Sign in users with passwords.
+- [x] Logout users.
 
 ### Database update
 - [ ] Post should have a unique UUID as well as the users.

@@ -1,13 +1,14 @@
 // file:/app/authentication/init.js
 'use strict';
 
-const bcrypt = require('bcryptjs')
-const passport = require('passport')
-const LocalStrategy = require('passport-local').Strategy
-const postgreManager = require('./../postgreManager')
-const config = require('../../config/config')
-const session = require('express-session')
-const authenticationMiddleware = require('./middleware')
+const bcrypt                = require('bcryptjs');
+const passport              = require('passport');
+const LocalStrategy         = require('passport-local').Strategy;
+const postgreManager        = require('./../postgreManager');
+const config                = require('../../config/config');
+const session               = require('express-session');
+const authenticationMiddleware = require('./middleware');
+const pgSession             = require('connect-pg-simple')(session);
 
 passport.serializeUser(function (user, callback) {
     callback(null, user.username)
@@ -44,12 +45,16 @@ function initPassport (app) {
     passport.authenticationMiddleware = authenticationMiddleware
 
     // Documentation: https://github.com/expressjs/session
+    // Documentation: https://www.npmjs.com/package/connect-pg-simple
     app.use(session({
+        store: new pgSession({ conString: config.postgre.connectURL }),
         secret: config.passport.secretKey,
         resave: false,
+        // TODO: investigate more on `saveUninitialized`
         saveUninitialized: false,
-        cookie: { maxAge: 60000 }
-    }))
+        cookie: { maxAge: config.passport.cookieMaxAge },
+    }));
+
     app.use(passport.initialize())
     app.use(passport.session())
 }
