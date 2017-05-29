@@ -15,7 +15,7 @@ query.createUsersTable = "CREATE TABLE USERS(	ID UUID PRIMARY KEY DEFAULT uuid_g
 												EMAIL TEXT UNIQUE NOT NULL,\
 												USERNAME TEXT NOT NULL,\
 												PASSWORD TEXT NOT NULL);"
-query.createPostsTable = "CREATE TABLE POSTS(	ID INT PRIMARY KEY NOT NULL,\
+query.createPostsTable = "CREATE TABLE POSTS(	ID UUID PRIMARY KEY DEFAULT uuid_generate_v1mc(),\
 												TITLE CHAR(60) NOT NULL,\
 												DESCRIPTION TEXT NOT NULL,\
 												LOCATION TEXT NOT NULL,\

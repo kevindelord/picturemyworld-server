@@ -12,16 +12,23 @@
 - [x] Sign in users with passwords.
 - [x] Logout users.
 
-### Database update
-- [ ] Post should have a unique UUID as well as the users.
-- [ ] Link a post to a user in database.
-- [ ] Retrieve uploaded photo and store them on disk.
-- [ ] Integrate AWS to store photos.
-- [ ] Integrate ImageShack or related to shrink photos (original/large/thumb).
-
 ### Script
 - [x] Create session table from `createDB` script.
 - [x] Script to migrate old website posts into the new database.
+
+### Database update
+- [x] Post should have a unique UUID as well as the users.
+- [ ] Link a post to a user in database.
+- [ ] GET posts endpoint should only return the post of the current user.
+
+### WS update
+- [ ] The GET posts endpoint should return all post information.
+- [ ] Add POST posts endpoint to create a new post.
+
+### Photo management
+- [ ] Retrieve uploaded photo and store them on disk.
+- [ ] Integrate AWS to store photos.
+- [ ] Integrate ImageShack or related to shrink photos (original/large/thumb).
 
 ## Webapp
 - [ ] What to use for the frontend?
