@@ -1,21 +1,20 @@
 #! /usr/bin/env node
 'use strict';
 
-const pg = require('pg')
 const config = require('../config/config')
+const manager = require('./postgreManager')
 const exec = require('child_process').exec;
-const manager = require('../app/postgreManager')
+
+var shellCommand = {};
+shellCommand.createSessionTable = `psql ${config.postgre.database} < node_modules/connect-pg-simple/table.sql`
 
 var query = {};
 query.createdb = `CREATE DATABASE ${config.postgre.database}`
-
 query.addUUIDExtension = 'CREATE EXTENSION "uuid-ossp";'
-
 query.createUsersTable = "CREATE TABLE USERS(	ID UUID PRIMARY KEY DEFAULT uuid_generate_v1mc(),\
 												EMAIL TEXT UNIQUE NOT NULL,\
 												USERNAME TEXT NOT NULL,\
 												PASSWORD TEXT NOT NULL);"
-
 query.createPostsTable = "CREATE TABLE POSTS(	ID INT PRIMARY KEY NOT NULL,\
 												TITLE CHAR(60) NOT NULL,\
 												DESCRIPTION TEXT NOT NULL,\
@@ -49,6 +48,13 @@ connectDatabase(function (client, done) {
 	// Execute queries to create tables.
 	manager.executeQueries(client, queries, 0, function (client) {
 		done()
-		process.exit(0)
+		exec(shellCommand.createSessionTable, (error, stdout, stderr) => {
+			if (error) {
+				console.log(`stderr: ${stderr}`);
+				console.error(`exec error: ${error}`);
+				return;
+			}
+			process.exit(0)
+		});
 	})
 })

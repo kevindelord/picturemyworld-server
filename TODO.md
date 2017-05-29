@@ -20,6 +20,7 @@
 - [ ] Integrate ImageShack or related to shrink photos (original/large/thumb).
 
 ### Script
+- [x] Create session table from `createDB` script.
 - [ ] Script to migrate old website posts into the new database.
 
 ## Webapp
