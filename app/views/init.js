@@ -14,13 +14,6 @@ function initViews (app) {
 	}))
 	app.set('view engine', '.hbs')  
 	app.set('views', __dirname)
-
-	// Default GET request on root
-	app.get('/', (request, response) => {  
-	    response.render('home', {
-	        name: 'Test Kevin'
-	    })
-	})
 }
 
 module.exports = initViews

@@ -8,6 +8,8 @@ const manager = require('../app/postgreManager')
 
 var query = {};
 
+// TODO: generate password hash with bcrypt.
+
 query.insertUser = "INSERT INTO USERS(USERNAME, EMAIL, PASSWORD) VALUES ('John Doe', 'test@gmail.com', 'this_is_not_a_generated_hash');"
 
 query.insertPost = "INSERT INTO POSTS(ID, TITLE, DESCRIPTION, LOCATION, LAT, LNG, DATE, RATIO)\

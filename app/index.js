@@ -20,6 +20,7 @@ require('./views').init(app)
 // Setup endpoints.
 require('./users').init(app)
 require('./posts').init(app)
+require('./user').init(app)
 
 app.listen(config.express.port, (error) => {
 	if (error) {

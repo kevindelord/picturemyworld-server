@@ -1,15 +1,15 @@
 // file:/app/authentication/init.js
 'use strict';
 
+const bcrypt = require('bcryptjs')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const postgreManager = require('./../postgreManager')
 const config = require('../../config/config')
 const session = require('express-session')
+const authenticationMiddleware = require('./middleware')
 
 passport.serializeUser(function (user, callback) {
-    console.log('serializeUser')
-    console.log(user)
     callback(null, user.username)
 })
 
@@ -17,31 +17,26 @@ passport.deserializeUser(function (email, callback) {
     postgreManager.getUserByEmail(email, callback)
 })
 
-function authenticationMiddleware () {
-    return function (req, res, next) {
-        if (req.isAuthenticated()) {
-            return next()
+function verifyUser(username, password, callback) {
+    const email = username
+    postgreManager.getUserByEmail(email, function (error, user) {
+        if (error) {
+            return callback(error)
         }
-        res.redirect('/')
-    }
-}
-
-function verifyUser(username, password, done) {
-    console.log(username)
-    console.log(password)
-    return done(null, false)
-    // postgreManager.getUserByEmail(email, function (err, user) {
-    //     if (err) {
-    //         return done(err)
-    //     }
-    //     if (!user) {
-    //         return done(null, false)
-    //     }
-    //     if (password !== user.password) {
-    //         return done(null, false)
-    //     }
-    //     return done(null, user)
-    // })
+        if (!user) {
+            return callback(null, false)
+        }
+        // Extract the user from [ Anonymous { ... } ]
+        user = user[0]
+        // Decrypt the local password and compare.
+        bcrypt.compare(password, user.password, function(error, result) {
+            if (result === true) {
+                return callback(null, user)
+            } else {
+                return callback(null, false)
+            }
+        });
+    });
 }
 
 function initPassport (app) {
@@ -60,4 +55,3 @@ function initPassport (app) {
 }
 
 module.exports = initPassport
-module.exports = authenticationMiddleware

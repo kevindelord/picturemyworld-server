@@ -13,6 +13,7 @@
 - [ ] Logout users.
 
 ### Database update
+- [ ] Post should have a unique UUID as well as the users.
 - [ ] Link a post to a user in database.
 - [ ] Retrieve uplaoded photo and store them on disk.
 - [ ] Integrate AWS to store photos.

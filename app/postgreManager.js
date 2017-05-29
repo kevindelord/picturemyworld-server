@@ -10,24 +10,10 @@ function createUser(user, callback) {
 	executeQueryWithParameters(query, parameters, callback)
 }
 
-// function getUserByEmail(email, callback) {
-// 	pg.connect(config.postgre.connectURL, function (error, client, done) {
-// 		if (error) {
-// 			return callback(error)
-// 		}
-
-// 		const query = `SELECT * FROM users WHERE (email == '${email}');`
-// 		client.query(query, function (error, result) {
-// 			done()
-
-// 			if (error) {
-// 				return callback(error)
-// 			} else {
-// 				return callback(result)
-// 			}
-// 		})
-// 	})
-// }
+function getUserByEmail(email, callback) {
+	const query = `SELECT * FROM users WHERE (email = '${email}');`
+	executeQueryWithParameters(query, null, callback)
+}
 
 function getUsers(callback) {
 	const query = "SELECT * FROM users"
@@ -37,16 +23,6 @@ function getUsers(callback) {
 function getPosts(callback) {
 	const query = "SELECT * FROM posts"
 	executeQueryWithParameters(query, null, callback)
-}
-
-function connect(url, next) {
-	pg.connect(url, function (error, client, done) {
-		if (error) {
-			console.log(`ERROR: ${error}`)
-		} else {
-			next(client, done)
-		}
-	})
 }
 
 function executeQueryWithParameters(query, parameters, callback) {
@@ -67,27 +43,7 @@ function executeQueryWithParameters(query, parameters, callback) {
 	})
 }
 
-function executeQuery(client, query, next) {
-	executeQueries(client, [query], 0, next)
-}
-
-function executeQueries(client, queries, index, next) {
-	if (index >= queries.length) {
-		return next(client)
-	}
-
-	client.query(queries[index], function (error, result) {
-		if (error) {
-			console.log(`ERROR: ${error}`)
-		} else {
-			executeQueries(client, queries, index + 1, next)
-		}
-	})
-}
-
-module.exports.executeQuery = executeQuery
-module.exports.executeQueries = executeQueries
-module.exports.connect = connect
 module.exports.createUser = createUser
 module.exports.getUsers = getUsers
 module.exports.getPosts = getPosts
+module.exports.getUserByEmail = getUserByEmail
