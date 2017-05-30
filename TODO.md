@@ -23,7 +23,8 @@
 - [x] GET posts endpoint should only return the post of the current user (for now).
 - [ ] Use public and private identifiers?
 - [ ] Use lowerCamelCase, upperCamelCase or lower_case ? (system might or might not be case sensitive).
-- [ ] Add created_at and uploaded_at columns.
+- [x] Add created_at to USERS and POSTS tables.
+- [ ] Add uploaded_at to USERS and POSTS tables.
 
 ### WS update
 - [x] The GET posts endpoint should return all post information.

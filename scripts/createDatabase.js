@@ -17,7 +17,8 @@ query.createUsersTable = "CREATE TABLE users\
 		id 			UUID PRIMARY KEY DEFAULT uuid_generate_v1mc(),\
 		email 		TEXT UNIQUE NOT NULL,\
 		username 	TEXT NOT NULL,\
-		password 	TEXT NOT NULL\
+		password 	TEXT NOT NULL,\
+		createdAt	TIMESTAMP DEFAULT current_timestamp\
 	);"
 
 query.createPostsTable = "CREATE TABLE posts\
@@ -31,6 +32,7 @@ query.createPostsTable = "CREATE TABLE posts\
 		date 		DATE NOT NULL,\
 		ratio 		DECIMAL NOT NULL,\
 		userId 		UUID NOT NULL,\
+		createdAt	TIMESTAMP DEFAULT current_timestamp,\
 		FOREIGN KEY	(userId) REFERENCES users(id) ON DELETE cascade\
 	);"
 
