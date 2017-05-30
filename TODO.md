@@ -21,10 +21,10 @@
 - [x] Post should have a unique UUID as well as the users.
 - [x] Link a post to a user in database.
 - [x] GET posts endpoint should only return the post of the current user (for now).
+- [x] Add created_at to USERS and POSTS tables.
+- [x] Add uploaded_at to USERS and POSTS tables.
 - [ ] Use public and private identifiers?
 - [ ] Use lowerCamelCase, upperCamelCase or lower_case ? (system might or might not be case sensitive).
-- [x] Add created_at to USERS and POSTS tables.
-- [ ] Add uploaded_at to USERS and POSTS tables.
 
 ### WS update
 - [x] The GET posts endpoint should return all post information.
@@ -46,3 +46,9 @@
 ## iOS
 - [ ] Create user management sessions.
 - [ ] Integrate custom user pages.
+
+
+## External links:
+
+- https://www.adminer.org/
+- https://www.postgresql.org/ftp/pgadmin/pgadmin4/v1.5/macos/

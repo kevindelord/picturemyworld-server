@@ -18,7 +18,8 @@ query.createUsersTable = "CREATE TABLE users\
 		email 		TEXT UNIQUE NOT NULL,\
 		username 	TEXT NOT NULL,\
 		password 	TEXT NOT NULL,\
-		createdAt	TIMESTAMP DEFAULT current_timestamp\
+		createdAt	TIMESTAMP DEFAULT current_timestamp,\
+		updatedAt	TIMESTAMP DEFAULT current_timestamp\
 	);"
 
 query.createPostsTable = "CREATE TABLE posts\
@@ -33,8 +34,20 @@ query.createPostsTable = "CREATE TABLE posts\
 		ratio 		DECIMAL NOT NULL,\
 		userId 		UUID NOT NULL,\
 		createdAt	TIMESTAMP DEFAULT current_timestamp,\
+		updatedAt	TIMESTAMP DEFAULT current_timestamp,\
 		FOREIGN KEY	(userId) REFERENCES users(id) ON DELETE cascade\
 	);"
+
+query.autoUpdateFunction = "CREATE OR REPLACE FUNCTION update_modified_column()\
+RETURNS TRIGGER AS $$\
+BEGIN\
+    NEW.updatedAt = now();\
+    RETURN NEW;\
+END;\
+$$ language 'plpgsql';"
+
+query.autoUpdatePosts = "CREATE TRIGGER update_customer_modtime BEFORE UPDATE ON posts FOR EACH ROW EXECUTE PROCEDURE update_modified_column();"
+query.autoUpdateUsers = "CREATE TRIGGER update_customer_modtime BEFORE UPDATE ON users FOR EACH ROW EXECUTE PROCEDURE update_modified_column();"
 
 // Connect to the default database, create and connect to the new one.
 function connectDatabase(next) {
@@ -55,7 +68,10 @@ connectDatabase(function (client, done) {
 	const queries = [
 		query.addUUIDExtension,
 		query.createUsersTable,
-		query.createPostsTable
+		query.createPostsTable,
+		query.autoUpdateFunction,
+		query.autoUpdatePosts,
+		query.autoUpdateUsers
 	]
 	// Execute queries to create tables.
 	manager.executeQueries(client, queries, 0, function (client) {

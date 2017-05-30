@@ -16,13 +16,13 @@ function getUserByEmail(email, callback) {
 }
 
 function getUsers(callback) {
-	const publicValues = ['email', 'username', 'createdAt']
+	const publicValues = ['email', 'username', 'createdAt', 'updatedAt']
 	const query = `SELECT ${publicValues} FROM users`
 	executeQueryWithParameters(query, null, callback)
 }
 
 function getPosts(callback) {
-	const publicValues = ['title', 'description', 'location', 'lat', 'lng', 'date', 'ratio', 'createdAt']
+	const publicValues = ['title', 'description', 'location', 'lat', 'lng', 'date', 'ratio', 'createdAt', 'updatedAt']
 	const query = `SELECT ${publicValues} FROM posts`
 	executeQueryWithParameters(query, null, callback)
 }
