@@ -49,8 +49,8 @@ function initPassport (app) {
     app.use(session({
         store: new pgSession({ conString: config.postgre.connectURL }),
         secret: config.passport.secretKey,
+        // TODO: investigate more on `saveUninitialized` and `resave`
         resave: false,
-        // TODO: investigate more on `saveUninitialized`
         saveUninitialized: false,
         cookie: { maxAge: config.passport.cookieMaxAge },
     }));
