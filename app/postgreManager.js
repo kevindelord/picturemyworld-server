@@ -11,18 +11,25 @@ function createUser(user, callback) {
 }
 
 function getUserByEmail(email, callback) {
-	const query = `SELECT * FROM users WHERE (email = '${email}');`
+	const query = `SELECT id, password FROM users WHERE (email = '${email}');`
 	executeQueryWithParameters(query, null, callback)
 }
 
 function getUsers(callback) {
-	const query = "SELECT * FROM users"
+	const query = "SELECT email, username FROM users"
 	executeQueryWithParameters(query, null, callback)
 }
 
 function getPosts(callback) {
-	const query = "SELECT * FROM posts"
+	const publicValues = ['title', 'description', 'location', 'lat', 'lng', 'date', 'ratio']
+	const query = `SELECT ${publicValues} FROM posts`
 	executeQueryWithParameters(query, null, callback)
+}
+
+function createPost(post, callback) {
+	const query = "INSERT INTO posts (title, description, location, lat, lng, date, ratio, userid) VALUES ($1, $2, $3, $4, $5, $6, $7, $8);"
+	const parameters = [post.title, post.description, post.location, post.lat, post.lng, post.date, post.ratio, post.userId]
+	executeQueryWithParameters(query, parameters, callback)
 }
 
 function executeQueryWithParameters(query, parameters, callback) {
@@ -43,6 +50,7 @@ function executeQueryWithParameters(query, parameters, callback) {
 	})
 }
 
+module.exports.createPost = createPost
 module.exports.createUser = createUser
 module.exports.getUsers = getUsers
 module.exports.getPosts = getPosts

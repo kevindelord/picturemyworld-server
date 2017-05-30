@@ -11,18 +11,28 @@ shellCommand.createSessionTable = `psql ${config.postgre.database} < node_module
 var query = {};
 query.createdb = `CREATE DATABASE ${config.postgre.database}`
 query.addUUIDExtension = 'CREATE EXTENSION "uuid-ossp";'
-query.createUsersTable = "CREATE TABLE USERS(	ID UUID PRIMARY KEY DEFAULT uuid_generate_v1mc(),\
-												EMAIL TEXT UNIQUE NOT NULL,\
-												USERNAME TEXT NOT NULL,\
-												PASSWORD TEXT NOT NULL);"
-query.createPostsTable = "CREATE TABLE POSTS(	ID UUID PRIMARY KEY DEFAULT uuid_generate_v1mc(),\
-												TITLE CHAR(60) NOT NULL,\
-												DESCRIPTION TEXT NOT NULL,\
-												LOCATION TEXT NOT NULL,\
-												LAT DOUBLE PRECISION NOT NULL,\
-												LNG DOUBLE PRECISION NOT NULL,\
-												DATE DATE NOT NULL,\
-												RATIO DECIMAL NOT NULL);"
+
+query.createUsersTable = "CREATE TABLE users\
+	(\
+		id 			UUID PRIMARY KEY DEFAULT uuid_generate_v1mc(),\
+		email 		TEXT UNIQUE NOT NULL,\
+		username 	TEXT NOT NULL,\
+		password 	TEXT NOT NULL\
+	);"
+
+query.createPostsTable = "CREATE TABLE posts\
+	(\
+		id 			UUID PRIMARY KEY DEFAULT uuid_generate_v1mc(),\
+		title 		CHAR(60) NOT NULL,\
+		description	TEXT NOT NULL,\
+		location 	TEXT NOT NULL,\
+		lat 		DOUBLE PRECISION NOT NULL,\
+		lng 		DOUBLE PRECISION NOT NULL,\
+		date 		DATE NOT NULL,\
+		ratio 		DECIMAL NOT NULL,\
+		userId 		UUID NOT NULL,\
+		FOREIGN KEY	(userId) REFERENCES users(id) ON DELETE cascade\
+	);"
 
 // Connect to the default database, create and connect to the new one.
 function connectDatabase(next) {

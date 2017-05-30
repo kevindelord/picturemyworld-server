@@ -15,15 +15,19 @@
 ### Script
 - [x] Create session table from `createDB` script.
 - [x] Script to migrate old website posts into the new database.
+- [ ] Update `populateDB` script to create post by users.
 
 ### Database update
 - [x] Post should have a unique UUID as well as the users.
-- [ ] Link a post to a user in database.
-- [ ] GET posts endpoint should only return the post of the current user.
+- [x] Link a post to a user in database.
+- [x] GET posts endpoint should only return the post of the current user (for now).
+- [ ] Use public and private identifiers?
+- [ ] Use lowerCamelCase, upperCamelCase or lower_case ? (system might or might not be case sensitive).
+- [ ] Add created_at and uploaded_at columns.
 
 ### WS update
-- [ ] The GET posts endpoint should return all post information.
-- [ ] Add POST posts endpoint to create a new post.
+- [x] The GET posts endpoint should return all post information.
+- [x] Add POST posts endpoint to create a new post.
 
 ### Photo management
 - [ ] Retrieve uploaded photo and store them on disk.

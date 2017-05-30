@@ -11,7 +11,7 @@ const authenticationMiddleware = require('./middleware');
 const pgSession             = require('connect-pg-simple')(session);
 
 passport.serializeUser(function (user, callback) {
-    callback(null, user.username)
+    callback(null, user.id)
 })
 
 passport.deserializeUser(function (email, callback) {
@@ -24,7 +24,7 @@ function verifyUser(username, password, callback) {
         if (error) {
             return callback(error)
         }
-        if (!user) {
+        if (!user || user.length == 0) {
             return callback(null, false)
         }
         // Extract the user from [ Anonymous { ... } ]
