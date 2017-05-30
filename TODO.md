@@ -25,6 +25,7 @@
 - [x] Add uploaded_at to USERS and POSTS tables.
 - [ ] Use public and private identifiers?
 - [ ] Use lowerCamelCase, upperCamelCase or lower_case ? (system might or might not be case sensitive).
+- [ ] Sanitise ALL user input (post data, login credentials, etc).
 
 ### WS update
 - [x] The GET posts endpoint should return all post information.
