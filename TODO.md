@@ -26,6 +26,7 @@
 - [ ] Use public and private identifiers?
 - [ ] Use lowerCamelCase, upperCamelCase or lower_case ? (system might or might not be case sensitive).
 - [ ] Sanitise ALL user input (post data, login credentials, etc).
+- [ ] Make sure the DB is not reachable from the outside, so no one can even try to connect. It should only accept connections from localhost (if it runs on the same machine).
 
 ### WS update
 - [x] The GET posts endpoint should return all post information.
