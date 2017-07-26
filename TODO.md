@@ -24,7 +24,7 @@
 - [x] Add created_at to USERS and POSTS tables.
 - [x] Add uploaded_at to USERS and POSTS tables.
 - [x] Use lower_case (system might or might not be case sensitive).
-- [ ] Sanitise ALL user input (post data, login credentials, etc).
+- [x] Sanitise ALL user input (post data, login credentials, etc).
 - [x] Use Prepared Statement for all SQL request.
 - [ ] Make sure the DB is not reachable from the outside, so no one can even try to connect. It should only accept connections from localhost (if it runs on the same machine).
 - [ ] Use public and private identifiers for objects?

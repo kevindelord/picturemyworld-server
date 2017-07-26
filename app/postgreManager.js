@@ -3,13 +3,19 @@
 
 const pg = require('pg')
 const config = require('../config/config')
+const sanitizer = require('sanitizer');
 
 // Create a new user with a prepared statement. 
 function createUser(user, callback) {
 	const query = {
 		name: 'create-user',
 		text: 'INSERT INTO users (email, username, password) VALUES ($1, $2, $3)',
-		values: [user.email, user.username, user.password]
+		values: [
+			// Sanitize all user inputs.
+			sanitizer.sanitize(user.email),
+			sanitizer.sanitize(user.username),
+			sanitizer.sanitize(user.password)
+		]
 	}
 	executeQueryWithParameters(query, callback)
 }
@@ -19,7 +25,10 @@ function getUserByEmail(email, callback) {
 	const query = {
 		name: 'get-user-by-email',
 		text: 'SELECT id, password FROM users WHERE (email = $1)',
-		values: [email]
+		values: [
+			// Sanitize all user inputs.
+			sanitizer.sanitize(email)
+		]
 	}
 	executeQueryWithParameters(query, callback)
 }
@@ -49,7 +58,17 @@ function createPost(post, callback) {
 	const query = {
 		name: 'create-post',
 		text: 'INSERT INTO posts (title, description, location, lat, lng, date, ratio, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8);',
-		values: [post.title, post.description, post.location, post.lat, post.lng, post.date, post.ratio, post.user_id]
+		values: [
+			// Sanitize all user inputs.
+			sanitizer.sanitize(post.title),
+			sanitizer.sanitize(post.description),
+			sanitizer.sanitize(post.location),
+			sanitizer.sanitize(post.lat),
+			sanitizer.sanitize(post.lng),
+			sanitizer.sanitize(post.date),
+			sanitizer.sanitize(post.ratio),
+			sanitizer.sanitize(post.user_id)
+		]
 	}
 	executeQueryWithParameters(query, callback)
 }
