@@ -16,7 +16,7 @@ function getPosts(request, response) {
 
 function createPost(request, response) {
 	const post = request.body
-	post.userId = request.session.passport['user']
+	post.user_id = request.session.passport['user']
 	manager.createPost(post, function (error, result) {
 		if (error) {
 			return response.status(500).json({"status": 500, "message": `ERROR: ${error}`})

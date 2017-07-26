@@ -16,20 +16,20 @@ function getUserByEmail(email, callback) {
 }
 
 function getUsers(callback) {
-	const publicValues = ['email', 'username', 'createdAt', 'updatedAt']
+	const publicValues = ['email', 'username', 'created_at', 'updated_at']
 	const query = `SELECT ${publicValues} FROM users`
 	executeQueryWithParameters(query, null, callback)
 }
 
 function getPosts(callback) {
-	const publicValues = ['title', 'description', 'location', 'lat', 'lng', 'date', 'ratio', 'createdAt', 'updatedAt']
+	const publicValues = ['title', 'description', 'location', 'lat', 'lng', 'date', 'ratio', 'created_at', 'updated_at']
 	const query = `SELECT ${publicValues} FROM posts`
 	executeQueryWithParameters(query, null, callback)
 }
 
 function createPost(post, callback) {
-	const query = "INSERT INTO posts (title, description, location, lat, lng, date, ratio, userid) VALUES ($1, $2, $3, $4, $5, $6, $7, $8);"
-	const parameters = [post.title, post.description, post.location, post.lat, post.lng, post.date, post.ratio, post.userId]
+	const query = "INSERT INTO posts (title, description, location, lat, lng, date, ratio, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8);"
+	const parameters = [post.title, post.description, post.location, post.lat, post.lng, post.date, post.ratio, post.user_id]
 	executeQueryWithParameters(query, parameters, callback)
 }
 

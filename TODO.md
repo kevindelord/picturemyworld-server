@@ -15,7 +15,7 @@
 ### Script
 - [x] Create session table from `createDB` script.
 - [x] Script to migrate old website posts into the new database.
-- [ ] Update `populateDB` script to create post by users.
+- [x] Update `populateDB` script to create post by users.
 
 ### Database update
 - [x] Post should have a unique UUID as well as the users.
@@ -23,8 +23,8 @@
 - [x] GET posts endpoint should only return the post of the current user (for now).
 - [x] Add created_at to USERS and POSTS tables.
 - [x] Add uploaded_at to USERS and POSTS tables.
+- [x] Use lower_case (system might or might not be case sensitive).
 - [ ] Use public and private identifiers?
-- [ ] Use lowerCamelCase, upperCamelCase or lower_case ? (system might or might not be case sensitive).
 - [ ] Sanitise ALL user input (post data, login credentials, etc).
 - [ ] Make sure the DB is not reachable from the outside, so no one can even try to connect. It should only accept connections from localhost (if it runs on the same machine).
 

@@ -18,8 +18,8 @@ query.createUsersTable = "CREATE TABLE users\
 		email 		TEXT UNIQUE NOT NULL,\
 		username 	TEXT NOT NULL,\
 		password 	TEXT NOT NULL,\
-		createdAt	TIMESTAMP DEFAULT current_timestamp,\
-		updatedAt	TIMESTAMP DEFAULT current_timestamp\
+		created_at	TIMESTAMP DEFAULT current_timestamp,\
+		updated_at	TIMESTAMP DEFAULT current_timestamp\
 	);"
 
 query.createPostsTable = "CREATE TABLE posts\
@@ -32,16 +32,16 @@ query.createPostsTable = "CREATE TABLE posts\
 		lng 		DOUBLE PRECISION NOT NULL,\
 		date 		DATE NOT NULL,\
 		ratio 		DECIMAL NOT NULL,\
-		userId 		UUID NOT NULL,\
-		createdAt	TIMESTAMP DEFAULT current_timestamp,\
-		updatedAt	TIMESTAMP DEFAULT current_timestamp,\
-		FOREIGN KEY	(userId) REFERENCES users(id) ON DELETE cascade\
+		user_id 	UUID NOT NULL,\
+		created_at	TIMESTAMP DEFAULT current_timestamp,\
+		updated_at	TIMESTAMP DEFAULT current_timestamp,\
+		FOREIGN KEY	(user_id) REFERENCES users(id) ON DELETE cascade\
 	);"
 
 query.autoUpdateFunction = "CREATE OR REPLACE FUNCTION update_modified_column()\
 RETURNS TRIGGER AS $$\
 BEGIN\
-    NEW.updatedAt = now();\
+    NEW.updated_at = now();\
     RETURN NEW;\
 END;\
 $$ language 'plpgsql';"
