@@ -57,7 +57,12 @@ function createPost(post, callback) {
 // Execute a query with a prepared statement.
 function executeQueryWithParameters(query, callback) {
 	// Connect to the database using the configured username, host and database name.
-	pg.connect(config.postgre.connectURL, function (error, client, done) {
+	// Create a pool
+	var pool = new pg.Pool({
+		connectionString: config.postgre.connectURL
+	})
+	// Connection using created pool
+	pool.connect(function (error, client, done) {
 		if (error) {
 			return callback(error)
 		}
@@ -72,6 +77,8 @@ function executeQueryWithParameters(query, callback) {
 			}
 		})
 	})
+	// Pool shutdown
+	pool.end()
 }
 
 module.exports.createPost = createPost
