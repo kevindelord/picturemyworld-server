@@ -34,7 +34,7 @@ To list all tables:
 \dt
 ```
 
-### List of depedencies
+### List of dependencies
 
 | Name        | Version     | Summary |
 |:------------|:------------|:---------|
