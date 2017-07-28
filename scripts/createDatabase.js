@@ -22,7 +22,7 @@ query.createUsersTable = "CREATE TABLE users\
 query.createPostsTable = "CREATE TABLE posts\
 	(\
 		id 			UUID PRIMARY KEY DEFAULT uuid_generate_v1mc(),\
-		title 		CHAR(60) NOT NULL,\
+		title 		TEXT NOT NULL,\
 		description	TEXT NOT NULL,\
 		location 	TEXT NOT NULL,\
 		lat 		DOUBLE PRECISION NOT NULL,\
