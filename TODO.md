@@ -33,6 +33,7 @@
 - [x] The GET posts endpoint should return all post information.
 - [x] Add POST posts endpoint to create a new post.
 - [ ] Create GET posts for a given user.
+- [ ] Create Image model object and integrate into API.
 
 ## Login
 - [ ] The login parameter should be 'email' not 'username'.
@@ -41,7 +42,8 @@
 - [ ] Integrate Google login.
 
 ### Photo management
-- [ ] Retrieve uploaded photo and store them on disk.
+- [x] Retrieve uploaded photo and store them on disk.
+- [ ] Force upload to only image file.
 - [ ] Integrate AWS to store photos.
 - [ ] Integrate ImageShack or related to shrink photos (original/large/thumb).
 
