@@ -9,7 +9,8 @@ const sanitizer = require('sanitizer');
 function createUser(user, callback) {
 	const query = {
 		name: 'create-user',
-		text: 'INSERT INTO users (email, username, password) VALUES ($1, $2, $3)',
+		text: 'INSERT INTO users (email, username, password)\
+		VALUES ($1, $2, $3)',
 		values: [
 			// Sanitize all user inputs.
 			sanitizer.sanitize(user.email),
@@ -37,7 +38,7 @@ function getUserByEmail(email, callback) {
 function getUsers(callback) {
 	const query = {
 		name: 'get-users',
-		text: 'SELECT (email, username, created_at, updated_at) FROM users',
+		text: 'SELECT email, username, created_at, updated_at FROM users',
 		values: []
 	}
 	executeQueryWithParameters(query, callback)
@@ -47,19 +48,27 @@ function getUsers(callback) {
 function getPosts(callback) {
 	const query = {
 		name: 'get-posts',
-		text: 'SELECT (title, description, location, lat, lng, date, ratio, created_at, updated_at) FROM posts',
+		text: 'SELECT title, description, location, lat, lng, date, ratio, created_at, updated_at FROM posts',
 		values: []
 	}
 	executeQueryWithParameters(query, callback)
 }
 
-// Create a new post with a prepared statement. 
-function createPost(post, callback) {
+// Create a new image post with a prepared statement. 
+function createImagePost(post, image, user_identifier, callback) {
 	const query = {
-		name: 'create-post',
-		text: 'INSERT INTO posts (title, description, location, lat, lng, date, ratio, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8);',
+		name: 'create-image-post',
+		text: 'WITH post_key AS (\
+					INSERT INTO posts (title, description, location, lat, lng, date, ratio, user_id_fkey)\
+					VALUES ($1, $2, $3, $4, $5, $6, $7, $8)\
+					RETURNING id\
+				)\
+				INSERT INTO images (original_name, field_name, encoding, mimetype, destination, filename, path, size, user_id_fkey, post_id_fkey)\
+					SELECT $9, $10, $11, $12, $13, $14, $15, $16, $17, post_key.id\
+					FROM post_key;',
 		values: [
 			// Sanitize all user inputs.
+			// Post data
 			sanitizer.sanitize(post.title),
 			sanitizer.sanitize(post.description),
 			sanitizer.sanitize(post.location),
@@ -67,7 +76,17 @@ function createPost(post, callback) {
 			sanitizer.sanitize(post.lng),
 			sanitizer.sanitize(post.date),
 			sanitizer.sanitize(post.ratio),
-			sanitizer.sanitize(post.user_id)
+			sanitizer.sanitize(user_identifier),
+			// Image data
+			sanitizer.sanitize(image.originalname), // Multer and the database have a different naming convention.
+			sanitizer.sanitize(image.fieldname), // Multer and the database have a different naming convention.
+			sanitizer.sanitize(image.encoding),
+			sanitizer.sanitize(image.mimetype),
+			sanitizer.sanitize(image.destination),
+			sanitizer.sanitize(image.filename),
+			sanitizer.sanitize(image.path),
+			sanitizer.sanitize(image.size),
+			sanitizer.sanitize(user_identifier)
 		]
 	}
 	executeQueryWithParameters(query, callback)
@@ -100,8 +119,8 @@ function executeQueryWithParameters(query, callback) {
 	pool.end()
 }
 
-module.exports.createPost = createPost
 module.exports.createUser = createUser
 module.exports.getUsers = getUsers
 module.exports.getPosts = getPosts
 module.exports.getUserByEmail = getUserByEmail
+module.exports.createImagePost = createImagePost
