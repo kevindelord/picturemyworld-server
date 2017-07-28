@@ -48,6 +48,7 @@ To list all tables:
 | passport    | 0.3.2       | For the login authentification |
 | passport-local | 1.0.0    | Local username and password authentication strategy for Passport |
 | sanitizer   | 0.1.3       | To sanitize user input |
+| multer      | 1.3.0       | Middleware for handling multipart/form-data | 
 
 ### To check and update dependencies
 
