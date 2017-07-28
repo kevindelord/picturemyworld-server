@@ -11,20 +11,19 @@ const authenticationMiddleware = require('./middleware');
 const pgSession             = require('connect-pg-simple')(session);
 
 passport.serializeUser(function (user, callback) {
-    callback(null, user.username)
+    callback(null, user.id)
 })
 
 passport.deserializeUser(function (email, callback) {
     postgreManager.getUserByEmail(email, callback)
 })
 
-function verifyUser(username, password, callback) {
-    const email = username
+function verifyUser(email, password, callback) {
     postgreManager.getUserByEmail(email, function (error, user) {
         if (error) {
             return callback(error)
         }
-        if (!user) {
+        if (!user || user.length == 0) {
             return callback(null, false)
         }
         // Extract the user from [ Anonymous { ... } ]
@@ -49,8 +48,8 @@ function initPassport (app) {
     app.use(session({
         store: new pgSession({ conString: config.postgre.connectURL }),
         secret: config.passport.secretKey,
+        // TODO: investigate more on `saveUninitialized` and `resave`
         resave: false,
-        // TODO: investigate more on `saveUninitialized`
         saveUninitialized: false,
         cookie: { maxAge: config.passport.cookieMaxAge },
     }));

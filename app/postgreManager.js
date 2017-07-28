@@ -3,35 +3,90 @@
 
 const pg = require('pg')
 const config = require('../config/config')
+const sanitizer = require('sanitizer');
 
+// Create a new user with a prepared statement. 
 function createUser(user, callback) {
-	const query = "INSERT INTO users (email, username, password) VALUES ($1, $2, $3);"
-	const parameters = [user.email, user.username, user.password]
-	executeQueryWithParameters(query, parameters, callback)
+	const query = {
+		name: 'create-user',
+		text: 'INSERT INTO users (email, username, password) VALUES ($1, $2, $3)',
+		values: [
+			// Sanitize all user inputs.
+			sanitizer.sanitize(user.email),
+			sanitizer.sanitize(user.username),
+			sanitizer.sanitize(user.password)
+		]
+	}
+	executeQueryWithParameters(query, callback)
 }
 
+// Fetch a user by its email (unique in DB) with a prepared statement.
 function getUserByEmail(email, callback) {
-	const query = `SELECT * FROM users WHERE (email = '${email}');`
-	executeQueryWithParameters(query, null, callback)
+	const query = {
+		name: 'get-user-by-email',
+		text: 'SELECT id, password FROM users WHERE (email = $1)',
+		values: [
+			// Sanitize all user inputs.
+			sanitizer.sanitize(email)
+		]
+	}
+	executeQueryWithParameters(query, callback)
 }
 
+// Fetch all users with a prepared statement.
 function getUsers(callback) {
-	const query = "SELECT * FROM users"
-	executeQueryWithParameters(query, null, callback)
+	const query = {
+		name: 'get-users',
+		text: 'SELECT (email, username, created_at, updated_at) FROM users',
+		values: []
+	}
+	executeQueryWithParameters(query, callback)
 }
 
+// Fetch all posts with a prepared statement.
 function getPosts(callback) {
-	const query = "SELECT * FROM posts"
-	executeQueryWithParameters(query, null, callback)
+	const query = {
+		name: 'get-posts',
+		text: 'SELECT (title, description, location, lat, lng, date, ratio, created_at, updated_at) FROM posts',
+		values: []
+	}
+	executeQueryWithParameters(query, callback)
 }
 
-function executeQueryWithParameters(query, parameters, callback) {
+// Create a new post with a prepared statement. 
+function createPost(post, callback) {
+	const query = {
+		name: 'create-post',
+		text: 'INSERT INTO posts (title, description, location, lat, lng, date, ratio, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8);',
+		values: [
+			// Sanitize all user inputs.
+			sanitizer.sanitize(post.title),
+			sanitizer.sanitize(post.description),
+			sanitizer.sanitize(post.location),
+			sanitizer.sanitize(post.lat),
+			sanitizer.sanitize(post.lng),
+			sanitizer.sanitize(post.date),
+			sanitizer.sanitize(post.ratio),
+			sanitizer.sanitize(post.user_id)
+		]
+	}
+	executeQueryWithParameters(query, callback)
+}
+
+// Execute a query with a prepared statement.
+function executeQueryWithParameters(query, callback) {
 	// Connect to the database using the configured username, host and database name.
-	pg.connect(config.postgre.connectURL, function (error, client, done) {
+	// Create a pool
+	var pool = new pg.Pool({
+		connectionString: config.postgre.connectURL
+	})
+	// Connection using created pool
+	pool.connect(function (error, client, done) {
 		if (error) {
 			return callback(error)
 		}
-		client.query(query, parameters, function (error, result) {
+		// Execute the query.
+		client.query(query, function (error, result) {
 			// Close the pg client.
 			done()
 			if (error) {
@@ -41,8 +96,11 @@ function executeQueryWithParameters(query, parameters, callback) {
 			}
 		})
 	})
+	// Pool shutdown
+	pool.end()
 }
 
+module.exports.createPost = createPost
 module.exports.createUser = createUser
 module.exports.getUsers = getUsers
 module.exports.getPosts = getPosts

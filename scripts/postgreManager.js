@@ -1,17 +1,21 @@
-// file:/app/postgreManager.js
+// file:/scripts/postgreManager.js
 'use strict';
 
 const pg = require('pg')
 const config = require('../config/config')
 
 function connect(url, next) {
-	pg.connect(url, function (error, client, done) {
+	var pool = new pg.Pool({
+		connectionString: url
+	})
+	pool.connect(function (error, client, release) {
 		if (error) {
 			console.log(`ERROR: ${error}`)
 		} else {
-			next(client, done)
+			next(client)
 		}
 	})
+	pool.end()
 }
 
 function executeQuery(client, query, next) {
@@ -26,9 +30,9 @@ function executeQueries(client, queries, index, next) {
 	client.query(queries[index], function (error, result) {
 		if (error) {
 			console.log(`ERROR: ${error}`)
-		} else {
-			executeQueries(client, queries, index + 1, next)
 		}
+
+		executeQueries(client, queries, index + 1, next)
 	})
 }
 
