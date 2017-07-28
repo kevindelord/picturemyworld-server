@@ -43,7 +43,8 @@
 
 ### Photo management
 - [x] Retrieve uploaded photo and store them on disk.
-- [ ] Force upload to only image file.
+- [ ] Multer-Filter: Force upload to only image file.
+- [ ] Multer-Filter: Force endpoint to receive image object.
 - [ ] Integrate AWS to store photos.
 - [ ] Integrate ImageShack or related to shrink photos (original/large/thumb).
 

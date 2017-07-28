@@ -22,9 +22,13 @@ function createPost(request, response) {
 		if (error) {
 			return response.status(400).json({"status": 400, "message": `${error}`, "code": `${error["code"]}`})
 		}
-
 		const post = request.body	// request.body will hold the text fields.
 		const image = request.file 	// request.file is the `image` file.
+		if (!image) {
+			// TODO: do this with a multer filter?
+			return response.status(400).json({"status": 400, "message": `Missing image object`, "code": "undefined"})
+		}
+
 		manager.createImagePost(post, image, user_identifier, function (error, result) {
 			if (error) {
 				return response.status(500).json({"status": 500, "message": `${error}`, "code": `${error["code"]}`})
