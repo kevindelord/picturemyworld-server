@@ -22,17 +22,36 @@ query.createUsersTable = "CREATE TABLE users\
 query.createPostsTable = "CREATE TABLE posts\
 	(\
 		id 			UUID PRIMARY KEY DEFAULT uuid_generate_v1mc(),\
-		title 		CHAR(60) NOT NULL,\
+		title 		TEXT NOT NULL,\
 		description	TEXT NOT NULL,\
 		location 	TEXT NOT NULL,\
 		lat 		DOUBLE PRECISION NOT NULL,\
 		lng 		DOUBLE PRECISION NOT NULL,\
 		date 		DATE NOT NULL,\
 		ratio 		DECIMAL NOT NULL,\
-		user_id 	UUID NOT NULL,\
+		user_id_fkey UUID NOT NULL,\
 		created_at	TIMESTAMP DEFAULT current_timestamp,\
 		updated_at	TIMESTAMP DEFAULT current_timestamp,\
-		FOREIGN KEY	(user_id) REFERENCES users(id) ON DELETE cascade\
+		FOREIGN KEY	(user_id_fkey) REFERENCES users(id) ON DELETE cascade\
+	);"
+
+query.createImagesTable = "CREATE TABLE images\
+	(\
+		id 			UUID PRIMARY KEY DEFAULT uuid_generate_v1mc(),\
+		original_name TEXT NOT NULL,\
+		field_name	TEXT NOT NULL,\
+		encoding 	TEXT NOT NULL,\
+		mimetype 	TEXT NOT NULL,\
+		destination TEXT NOT NULL,\
+		filename 	TEXT NOT NULL,\
+		path 		TEXT NOT NULL,\
+		size		INTEGER NOT NULL,\
+		user_id_fkey UUID NOT NULL,\
+		post_id_fkey UUID NOT NULL,\
+		created_at	TIMESTAMP DEFAULT current_timestamp,\
+		updated_at	TIMESTAMP DEFAULT current_timestamp,\
+		FOREIGN KEY	(user_id_fkey) REFERENCES users(id) ON DELETE cascade,\
+		FOREIGN KEY	(post_id_fkey) REFERENCES posts(id) ON DELETE cascade\
 	);"
 
 query.autoUpdateFunction = "CREATE OR REPLACE FUNCTION update_modified_column()\
@@ -81,6 +100,7 @@ connectDatabase(function (client) {
 		query.addUUIDExtension,
 		query.createUsersTable,
 		query.createPostsTable,
+		query.createImagesTable,
 		query.autoUpdateFunction,
 		query.autoUpdatePosts,
 		query.autoUpdateUsers

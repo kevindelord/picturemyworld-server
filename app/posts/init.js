@@ -3,6 +3,7 @@
 
 const manager 	= require('../postgreManager')
 const passport 	= require('passport')
+const multer  = require('multer')
 
 function getPosts(request, response) {
 	manager.getPosts(function (error, result) {
@@ -15,14 +16,26 @@ function getPosts(request, response) {
 }
 
 function createPost(request, response) {
-	const post = request.body
-	post.user_id = request.session.passport['user']
-	manager.createPost(post, function (error, result) {
+	const user_identifier = request.session.passport['user']
+	const upload = multer({ dest: './user_uploads/' }).single('image')
+	upload(request, response, function (error) {
 		if (error) {
-			return response.status(500).json({"status": 500, "message": `ERROR: ${error}`})
-		} else {
-			return response.status(200).json({"status": 200, "message": "New post successfully created"})
+			return response.status(400).json({"status": 400, "message": `${error}`, "code": `${error["code"]}`})
 		}
+		const post = request.body	// request.body will hold the text fields.
+		const image = request.file 	// request.file is the `image` file.
+		if (!image) {
+			// TODO: do this with a multer filter?
+			return response.status(400).json({"status": 400, "message": `Missing image object`, "code": "undefined"})
+		}
+
+		manager.createImagePost(post, image, user_identifier, function (error, result) {
+			if (error) {
+				return response.status(500).json({"status": 500, "message": `${error}`, "code": `${error["code"]}`})
+			} else {
+				return response.status(200).json({"status": 200, "message": "New post successfully created"})
+			}
+		})
 	})
 }
 

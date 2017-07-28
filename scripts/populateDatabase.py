@@ -11,26 +11,34 @@ def createUser():
 	print r.content
 
 def createNewPosts(cookies):
-	r = requests.post('http://localhost:3000/post', cookies = cookies, data = {
-		'title': 'Lovely Title',
-		'description': 'That was good',
-		'location': 'London Bridge',
-		'lat': 0.34567,
-		'lng': -64.4356,
-		'date': '2017-01-08',
-		'ratio': 0.75
-	})
+	r = requests.post('http://localhost:3000/post',
+		cookies = cookies,
+		files = { 'image': open('./scripts/images/ocean.jpg', 'rb') },
+		data = {
+			'title': 'Old Pier',
+			'description': 'What used to be a pier in Lobitos',
+			'location': 'Lobitos',
+			'lat': 0.34567,
+			'lng': -64.4356,
+			'date': '2017-01-08',
+			'ratio': 0.75
+		}
+	)
 	print r.content
 	
-	r = requests.post('http://localhost:3000/post', cookies = cookies, data = {
-		'title': 'Secondary Post',
-		'description': 'May the force be with you',
-		'location': 'Colombia',
-		'lat': 4.34567,
-		'lng': -4.4356,
-		'date': '2017-01-10',
-		'ratio': 1.33
-	})
+	r = requests.post('http://localhost:3000/post',
+		cookies = cookies,
+		files = { 'image': open('./scripts/images/ruins.jpg', 'rb') },
+		data = {
+			'title': 'Chan Chan',
+			'description': 'Ruins in Peru',
+			'location': 'Trujillo, Peru',
+			'lat': 4.34567,
+			'lng': -4.4356,
+			'date': '2017-01-10',
+			'ratio': 1.33
+		}
+	)
 	print r.content
 
 def login():
