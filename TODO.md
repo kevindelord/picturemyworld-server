@@ -32,8 +32,13 @@
 ### API update
 - [x] The GET posts endpoint should return all post information.
 - [x] Add POST posts endpoint to create a new post.
-- [ ] The login parameter should be 'email' not 'username'.
 - [ ] Create GET posts for a given user.
+
+## Login
+- [ ] The login parameter should be 'email' not 'username'.
+- [ ] Forgot password feature.
+- [ ] Integrate Facebook login.
+- [ ] Integrate Google login.
 
 ### Photo management
 - [ ] Retrieve uploaded photo and store them on disk.

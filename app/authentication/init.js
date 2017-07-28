@@ -18,8 +18,7 @@ passport.deserializeUser(function (email, callback) {
     postgreManager.getUserByEmail(email, callback)
 })
 
-function verifyUser(username, password, callback) {
-    const email = username
+function verifyUser(email, password, callback) {
     postgreManager.getUserByEmail(email, function (error, user) {
         if (error) {
             return callback(error)
