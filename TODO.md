@@ -32,8 +32,9 @@
 ### API update
 - [x] The GET posts endpoint should return all post information.
 - [x] Add POST posts endpoint to create a new post.
+- [x] Create Image model object and integrate into API.
 - [ ] Create GET posts for a given user.
-- [ ] Create Image model object and integrate into API.
+- [ ] Most GET endpoint should not require a logged in session.
 
 ## Login
 - [ ] The login parameter should be 'email' not 'username'.
