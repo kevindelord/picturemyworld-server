@@ -40,7 +40,7 @@
 - [ ] Create GET posts for a given user.
 - [ ] Most GET endpoint should not require a logged in session.
 
-## Login
+### Login
 - [ ] The login parameter should be 'email' not 'username'.
 - [ ] Forgot password feature.
 - [ ] Integrate Facebook login.
@@ -53,18 +53,18 @@
 - [ ] Integrate AWS to store photos.
 - [ ] Integrate ImageShack or related to shrink photos (original/large/thumb).
 
-## Webapp
-- [ ] What to use for the frontend?
-- [ ] Create sign in page.
-- [ ] Create register page.
-- [ ] Create basic index page.
-- [ ] Integrate search bar to search for users.
-- [ ] Create dedicated user page.
-
-## iOS
-- [ ] Create user management sessions.
-- [ ] Integrate custom user pages.
-
+## Documentation
+- [ ] Github: create API documentation page
+### User Posts
+- [ ] Endpoint: GET posts
+- [ ] Endpoint: POST post
+### User Sessions
+- [ ] Endpoint: POST login
+- [ ] Endpoint: GET logout
+- [ ] Endpoint: GET profile ?
+### User accounts
+- [ ] Endpoint: POST users
+- [ ] Endpoint: GET users
 
 ## External links:
 
