@@ -7,8 +7,14 @@ const config 		= require('config');
 const app 			= express();
 
 const environment = config.util.getEnv('NODE_ENV');
-if (!environment || (environment != "development" || environment != "production")) {
-	return console.log("Invalid Node environment. Please use one of the following:\n- 'development'\n- 'production'");
+const configured = ["development", "staging", "production"]
+if (!environment || configured.includes(environment) == false) {
+	console.log(`\nInvalid Node environment. Please use one of the following:`);
+	configured.forEach(function(element) {
+		console.log(`- ${element}`);
+	});
+	// Stop the server
+	return
 }
 
 // Use BodyParser to parse the body of a request
@@ -27,7 +33,8 @@ require('./user').init(app);
 
 app.listen(config.get("express.port"), (error) => {
 	if (error) {
-		return console.log('something bad happened', error);
+		// Stop the server
+		return console.log('Something bad happened', error);
 	}
-	console.log(`server is listening on ${config.express.port}`);
+	console.log(`Server starting in '${environment}', now listening on port ${config.express.port}`);
 });
