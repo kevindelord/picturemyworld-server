@@ -1,0 +1,28 @@
+// Default configuration
+{
+	// Postgre Configuration
+	"postgre": {
+		"user": "user",
+		"password": "password",
+		"host": "host",
+		"database": "database",
+	},
+	// Random generated with OnePassword
+	"passport": {
+		"secretKey": "secretKey",
+		"cookieMaxAgeInDays": 30, // (30 * 24 * 60 * 60 * 1000)
+	},
+	// Express configuration
+	"express": {
+		"port": 3000,
+		// Express upload files
+		"upload": {
+			"destinationFolder": "./user_uploads/",
+			"fileSizeInMB": 10, // 1000 * 1000 * 10
+		}
+	},
+	// BCryptJS configuration
+	"bcrypt": {
+		"seedLength": 12
+	}
+}

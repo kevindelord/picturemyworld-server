@@ -1,1 +1,2 @@
-require('./app/index')
+// file:/index.js
+require('./app/index');

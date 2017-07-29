@@ -1,14 +1,23 @@
 // file:/app/index.js
 'use strict';
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const config = require('../config/config');
-const app = express();
+const express 		= require('express');
+const bodyParser 	= require('body-parser');
+const config 		= require('config');
+const app 			= express();
 
-// Documentation: https://www.npmjs.com/package/body-parser
+const environment = config.util.getEnv('NODE_ENV');
+const configured = ["development", "staging", "production"]
+if (!environment || configured.includes(environment) == false) {
+	console.log(`\nInvalid Node environment. Please use one of the following:`);
+	configured.forEach(function(element) {
+		console.log(`- ${element}`);
+	});
+	// Stop the server
+	return
+}
+
 // Use BodyParser to parse the body of a request
-// TODO: urlencoded extended or not?
 app.use(bodyParser.urlencoded({extended: false}));
 
 // Init authentication through Passportjs.
@@ -22,9 +31,10 @@ require('./users').init(app);
 require('./posts').init(app);
 require('./user').init(app);
 
-app.listen(config.express.port, (error) => {
+app.listen(config.get("express.port"), (error) => {
 	if (error) {
-		return console.log('something bad happened', error);
+		// Stop the server
+		return console.log('Something bad happened', error);
 	}
-	console.log(`server is listening on ${config.express.port}`);
-})
+	console.log(`Server starting in '${environment}', now listening on port ${config.express.port}`);
+});

@@ -2,15 +2,42 @@
 
 Framework: Node.js
 
-### How to start the server
+### How to initialize and start the server
 
-Execute:
+One script to rule them all! `setup.py`
 
 ```
-npm install
-npm run createDB
-npm start
+usage: setup.py [-h] -e ENV [-i] [-d] [-c] [-u UPLOAD] [-r]
+
+Initialize the NodeJS server for PictureMyWorld
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -e ENV, --env ENV     Configure the deployment environment.
+  -i, --install         Install all node dependencies.
+  -d, --delete          Delete the database for the given deployment
+                        environment.
+  -c, --create          Create a new database for the given deployment
+                        environment.
+  -r, --run             Run the server.
 ```
+
+On first install execute:
+```
+./setup.py --env development --install --create
+```
+
+To delete the corresponding database execute:
+```
+./setup.py --env development --delete
+```
+
+And finally to run the NodeJs server, execute:
+```
+./setup.py --env development --run
+```
+
+Obviously you can use all arguments at once :]
 
 ### Postgres
 
@@ -48,7 +75,8 @@ To list all tables:
 | passport    | 0.3.2       | For the login authentification |
 | passport-local | 1.0.0    | Local username and password authentication strategy for Passport |
 | sanitizer   | 0.1.3       | To sanitize user input |
-| multer      | 1.3.0       | Middleware for handling multipart/form-data | 
+| multer      | 1.3.0       | Middleware for handling multipart/form-data |
+| config      | 1.26.1      | Configurations for app deployments |
 
 ### To check and update dependencies
 

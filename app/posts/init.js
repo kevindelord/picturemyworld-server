@@ -5,15 +5,16 @@ const manager 	= require('../postgreManager');
 const passport 	= require('passport');
 const multer  	= require('multer');
 const path 		= require('path');
-const config 	= require('../../config/config');
+const config 	= require('config');
+const fs 		= require('fs');
 
 const multerUploaded = multer({
-	dest: config.express.upload.destinationFolder,
+	dest: config.get("express.upload.destinationFolder"),
 	limits: {
-		fileSize: config.express.upload.fileSize
+		fileSize: (config.get("express.upload.fileSizeInMB") * 1000 * 1000)
 	},
 	fileFilter: function (request, file, callback) {
-		var filetypes = config.express.upload.allowedMimetype;
+		var filetypes = /jpeg|jpg|png/;
 		var mimetype = filetypes.test(file.mimetype);
 		var extname = filetypes.test(path.extname(file.originalname).toLowerCase());
 		if (mimetype && extname) {
@@ -55,7 +56,16 @@ function createPost(request, response) {
 	});
 }
 
+function initUploadFolder() {
+	const destination = config.get("express.upload.destinationFolder");
+	if (!fs.existsSync(destination)) {
+		fs.mkdirSync(destination);
+	}
+}
+
 function initPosts (app) {
+	initUploadFolder();
+
 	app.get('/posts', passport.authenticationMiddleware(), getPosts);
 	app.post('/post', passport.authenticationMiddleware(), createPost);
 }

@@ -1,8 +1,8 @@
 // file:/app/postgreManager.js
 'use strict';
 
-const pg = require('pg')
-const config = require('../config/config')
+const pg 		= require('pg');
+const config 	= require('config');
 const sanitizer = require('sanitizer');
 
 // Create a new user with a prepared statement. 
@@ -17,8 +17,8 @@ function createUser(user, callback) {
 			sanitizer.sanitize(user.username),
 			sanitizer.sanitize(user.password)
 		]
-	}
-	executeQueryWithParameters(query, callback)
+	};
+	executeQueryWithParameters(query, callback);
 }
 
 // Fetch a user by its email (unique in DB) with a prepared statement.
@@ -30,8 +30,8 @@ function getUserByEmail(email, callback) {
 			// Sanitize all user inputs.
 			sanitizer.sanitize(email)
 		]
-	}
-	executeQueryWithParameters(query, callback)
+	};
+	executeQueryWithParameters(query, callback);
 }
 
 // Fetch all users with a prepared statement.
@@ -40,8 +40,8 @@ function getUsers(callback) {
 		name: 'get-users',
 		text: 'SELECT email, username, created_at, updated_at FROM users',
 		values: []
-	}
-	executeQueryWithParameters(query, callback)
+	};
+	executeQueryWithParameters(query, callback);
 }
 
 // Fetch all posts with a prepared statement.
@@ -50,8 +50,8 @@ function getPosts(callback) {
 		name: 'get-posts',
 		text: 'SELECT title, description, location, lat, lng, date, ratio, created_at, updated_at FROM posts',
 		values: []
-	}
-	executeQueryWithParameters(query, callback)
+	};
+	executeQueryWithParameters(query, callback);
 }
 
 // Create a new image post with a prepared statement. 
@@ -88,8 +88,12 @@ function createImagePost(post, image, user_identifier, callback) {
 			sanitizer.sanitize(image.size),
 			sanitizer.sanitize(user_identifier)
 		]
-	}
-	executeQueryWithParameters(query, callback)
+	};
+	executeQueryWithParameters(query, callback);
+}
+
+function connectURL() {
+	return `postgres://${config.get("postgre.user")}:${config.get("postgre.password")}@${config.get("postgre.host")}/${config.get("postgre.database")}`;
 }
 
 // Execute a query with a prepared statement.
@@ -97,8 +101,8 @@ function executeQueryWithParameters(query, callback) {
 	// Connect to the database using the configured username, host and database name.
 	// Create a pool
 	var pool = new pg.Pool({
-		connectionString: config.postgre.connectURL
-	})
+		connectionString: connectURL()
+	});
 	// Connection using created pool
 	pool.connect(function (error, client, done) {
 		if (error) {
@@ -107,20 +111,21 @@ function executeQueryWithParameters(query, callback) {
 		// Execute the query.
 		client.query(query, function (error, result) {
 			// Close the pg client.
-			done()
+			done();
 			if (error) {
-				return callback(error)
+				return callback(error);
 			} else {
-				return callback(null, result.rows)
+				return callback(null, result.rows);
 			}
-		})
-	})
+		});
+	});
 	// Pool shutdown
-	pool.end()
+	pool.end();
 }
 
-module.exports.createUser = createUser
-module.exports.getUsers = getUsers
-module.exports.getPosts = getPosts
-module.exports.getUserByEmail = getUserByEmail
-module.exports.createImagePost = createImagePost
+module.exports.createUser = createUser;
+module.exports.getUsers = getUsers;
+module.exports.getPosts = getPosts;
+module.exports.getUserByEmail = getUserByEmail;
+module.exports.createImagePost = createImagePost;
+module.exports.connectURL = connectURL;
