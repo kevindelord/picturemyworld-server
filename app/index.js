@@ -6,6 +6,11 @@ const bodyParser 	= require('body-parser');
 const config 		= require('config');
 const app 			= express();
 
+const environment = config.util.getEnv('NODE_ENV')
+if (!environment || (environment != "development" || environment != "production")) {
+	return console.log("Invalid Node environment. Please use one of the following:\n- 'development'\n- 'production'");
+}
+
 // Documentation: https://www.npmjs.com/package/body-parser
 // Use BodyParser to parse the body of a request
 // TODO: urlencoded extended or not?
