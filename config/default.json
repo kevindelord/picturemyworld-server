@@ -18,7 +18,6 @@
 		// Express upload files
 		"upload": {
 			"destinationFolder": "./user_uploads/",
-			"allowedMimetype": "/jpeg|jpg|png/",
 			"fileSizeInMB": 10, // 1000 * 1000 * 10
 		}
 	},

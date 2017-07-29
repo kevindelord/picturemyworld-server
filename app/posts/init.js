@@ -5,15 +5,15 @@ const manager 	= require('../postgreManager');
 const passport 	= require('passport');
 const multer  	= require('multer');
 const path 		= require('path');
-const config 	= require('../../config/config');
+const config 	= require('config');
 
 const multerUploaded = multer({
-	dest: config.express.upload.destinationFolder,
+	dest: config.get("express.upload.destinationFolder"),
 	limits: {
-		fileSize: config.express.upload.fileSize
+		fileSize: config.get("express.upload.fileSizeInMB")
 	},
 	fileFilter: function (request, file, callback) {
-		var filetypes = config.express.upload.allowedMimetype;
+		var filetypes = /jpeg|jpg|png/;
 		var mimetype = filetypes.test(file.mimetype);
 		var extname = filetypes.test(path.extname(file.originalname).toLowerCase());
 		if (mimetype && extname) {

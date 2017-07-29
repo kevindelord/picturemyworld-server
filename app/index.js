@@ -1,10 +1,10 @@
 // file:/app/index.js
 'use strict';
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const config = require('../config/config');
-const app = express();
+const express 		= require('express');
+const bodyParser 	= require('body-parser');
+const config 		= require('config');
+const app 			= express();
 
 // Documentation: https://www.npmjs.com/package/body-parser
 // Use BodyParser to parse the body of a request
@@ -22,7 +22,7 @@ require('./users').init(app);
 require('./posts').init(app);
 require('./user').init(app);
 
-app.listen(config.express.port, (error) => {
+app.listen(config.get("express.port"), (error) => {
 	if (error) {
 		return console.log('something bad happened', error);
 	}

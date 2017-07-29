@@ -1,20 +1,17 @@
 // file:/app/user/init.js
 'use strict';
 
-const passport = require('passport')
+const passport = require('passport');
 
 function initUser (app) {
-    app.get('/profile', passport.authenticationMiddleware(), function (request, response) {
-        return response.status(200).json({"status": 200, "message": "access profile"})
-    });
 
     app.post('/login', passport.authenticate('local', { failureFlash: true } ), function (request, response) {
-        return response.status(200).json({"status": 200, "message": "success"})
+        return response.status(200).json({"status": 200, "message": "success"});
     });
 
     app.get('/logout', function(request, response) {
         request.logout();
-        return response.status(200).json({"status": 200, "message": "successfully logged out"})
+        return response.status(200).json({"status": 200, "message": "successfully logged out"});
     });
 }
 
