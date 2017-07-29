@@ -4,9 +4,10 @@
 
 ### General
 - [x] Use node-config and process.env variables.
-- [ ] Script to generate config file.
 - [x] Setup script to install npm dependencies, missing folders and other third parties softwares.
 - [x] Use semi-columns everywhere.
+- [ ] Script to generate config file.
+- [ ] Check if server instance is not already running.
 
 ### User connections
 - [x] Properly register users with passwords and sessions.
