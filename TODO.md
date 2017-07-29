@@ -6,7 +6,7 @@
 - [x] Use node-config and process.env variables.
 - [ ] Script to generate config file.
 - [ ] Setup script to install npm dependencies, missing folders and other third parties softwares.
-- [ ] Use semi-columns everywhere.
+- [x] Use semi-columns everywhere.
 
 ### User connections
 - [x] Properly register users with passwords and sessions.
