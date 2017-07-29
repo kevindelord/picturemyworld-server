@@ -3,7 +3,7 @@
 ## Node.js Server
 
 ### General
-- [ ] Use node-config and process.env variables.
+- [x] Use node-config and process.env variables.
 - [ ] Script to generate config file.
 - [ ] Setup script to install npm dependencies, missing folders and other third parties softwares.
 - [ ] Use semi-columns everywhere.
