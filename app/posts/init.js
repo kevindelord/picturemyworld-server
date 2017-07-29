@@ -10,7 +10,7 @@ const config 	= require('config');
 const multerUploaded = multer({
 	dest: config.get("express.upload.destinationFolder"),
 	limits: {
-		fileSize: config.get("express.upload.fileSizeInMB")
+		fileSize: (config.get("express.upload.fileSizeInMB") * 1000 * 1000)
 	},
 	fileFilter: function (request, file, callback) {
 		var filetypes = /jpeg|jpg|png/;
