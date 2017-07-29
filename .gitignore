@@ -34,6 +34,8 @@ jspm_packages
 .node_repl_history
 
 # Custom
-config/config.js
+config/development.json
+config/staging.json
+config/production.json
 *.DS_Store
 user_uploads
