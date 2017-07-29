@@ -9,6 +9,9 @@ const config 	= require('../../config/config');
 
 const multerUploaded = multer({
 	dest: config.express.upload.destinationFolder,
+	limits: {
+		fileSize: config.express.upload.fileSize
+	},
 	fileFilter: function (request, file, callback) {
 		var filetypes = config.express.upload.allowedMimetype;
 		var mimetype = filetypes.test(file.mimetype);

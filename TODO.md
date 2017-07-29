@@ -52,7 +52,7 @@
 - [x] Retrieve uploaded photo and store them on disk.
 - [x] Multer-Filter: Force upload to only image file.
 - [x] Force endpoint to receive image object.
-- [ ] Add image size limit on upload?
+- [x] Add image size limit on upload to 10mb.
 - [ ] Integrate AWS to store photos.
 - [ ] Integrate ImageShack or related to shrink photos (original/large/thumb).
 
