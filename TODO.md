@@ -5,7 +5,7 @@
 ### General
 - [x] Use node-config and process.env variables.
 - [ ] Script to generate config file.
-- [ ] Setup script to install npm dependencies, missing folders and other third parties softwares.
+- [x] Setup script to install npm dependencies, missing folders and other third parties softwares.
 - [x] Use semi-columns everywhere.
 
 ### User connections
