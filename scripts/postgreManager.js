@@ -1,8 +1,8 @@
 // file:/scripts/postgreManager.js
 'use strict';
 
-const pg = require('pg')
-const config = require('config')
+const pg 		= require('pg');
+const config 	= require('config');
 
 function initURL() {
 	return `postgres://${config.get("postgre.user")}:${config.get("postgre.password")}@${config.get("postgre.host")}`;

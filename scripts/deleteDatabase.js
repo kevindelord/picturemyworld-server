@@ -1,4 +1,4 @@
-#! /usr/bin/env node
+// file:/scripts/deleteDatabase.js
 'use strict';
 
 const config 	= require('config');
