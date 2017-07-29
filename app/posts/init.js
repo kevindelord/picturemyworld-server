@@ -6,6 +6,7 @@ const passport 	= require('passport');
 const multer  	= require('multer');
 const path 		= require('path');
 const config 	= require('config');
+const fs 		= require('fs');
 
 const multerUploaded = multer({
 	dest: config.get("express.upload.destinationFolder"),
@@ -55,7 +56,16 @@ function createPost(request, response) {
 	});
 }
 
+function initUploadFolder() {
+	const destination = config.get("express.upload.destinationFolder");
+	if (!fs.existsSync(destination)) {
+		fs.mkdirSync(destination);
+	}
+}
+
 function initPosts (app) {
+	initUploadFolder();
+
 	app.get('/posts', passport.authenticationMiddleware(), getPosts);
 	app.post('/post', passport.authenticationMiddleware(), createPost);
 }
