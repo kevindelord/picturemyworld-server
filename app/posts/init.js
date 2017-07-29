@@ -3,7 +3,21 @@
 
 const manager 	= require('../postgreManager')
 const passport 	= require('passport')
-const multer  = require('multer')
+const multer  	= require('multer')
+const path 		= require('path')
+
+const multerUploaded = multer({
+	dest: './user_uploads/',
+	fileFilter: function (request, file, callback) {
+		var filetypes = /jpeg|jpg|png/;
+		var mimetype = filetypes.test(file.mimetype);
+		var extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+		if (mimetype && extname) {
+			return callback(null, true);
+		}
+		callback("Error: File upload only supports the following filetypes - " + filetypes);
+	}
+}).single('image')
 
 function getPosts(request, response) {
 	manager.getPosts(function (error, result) {
@@ -17,16 +31,14 @@ function getPosts(request, response) {
 
 function createPost(request, response) {
 	const user_identifier = request.session.passport['user']
-	const upload = multer({ dest: './user_uploads/' }).single('image')
-	upload(request, response, function (error) {
+	multerUploaded(request, response, function (error) {
 		if (error) {
 			return response.status(400).json({"status": 400, "message": `${error}`, "code": `${error["code"]}`})
 		}
 		const post = request.body	// request.body will hold the text fields.
 		const image = request.file 	// request.file is the `image` file.
 		if (!image) {
-			// TODO: do this with a multer filter?
-			return response.status(400).json({"status": 400, "message": `Missing image object`, "code": "undefined"})
+			return response.status(400).json({"status": 400, "message": "Missing image object", "code": "undefined"})
 		}
 
 		manager.createImagePost(post, image, user_identifier, function (error, result) {

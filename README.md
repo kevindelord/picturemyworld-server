@@ -59,8 +59,14 @@ $> ncu
  pg  ^6.2.3  →  ^7.0.2
 ```
 
-Run ncu with -u to upgrade package.json
+Run `ncu` with `-u` to upgrade package.json
 
 ```
 ncu -u
 ```
+
+## External links:
+
+- https://www.adminer.org/
+- https://www.postgresql.org/ftp/pgadmin/pgadmin4/v1.5/macos/
+- http://docs.python-requests.org/en/latest/user/quickstart/#post-a-multipart-encoded-file

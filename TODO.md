@@ -5,6 +5,7 @@
 ### General
 - [ ] Use node-config and process.env variables.
 - [ ] Script to generate config file.
+- [ ] Setup script to install npm dependencies, missing folders and other third parties softwares.
 
 ### User connections
 - [x] Properly register users with passwords and sessions.
@@ -48,8 +49,9 @@
 
 ### Photo management
 - [x] Retrieve uploaded photo and store them on disk.
-- [ ] Multer-Filter: Force upload to only image file.
-- [ ] Multer-Filter: Force endpoint to receive image object.
+- [x] Multer-Filter: Force upload to only image file.
+- [x] Force endpoint to receive image object.
+- [ ] Add image size limit on upload?
 - [ ] Integrate AWS to store photos.
 - [ ] Integrate ImageShack or related to shrink photos (original/large/thumb).
 
@@ -65,8 +67,3 @@
 ### User accounts
 - [ ] Endpoint: POST users
 - [ ] Endpoint: GET users
-
-## External links:
-
-- https://www.adminer.org/
-- https://www.postgresql.org/ftp/pgadmin/pgadmin4/v1.5/macos/
