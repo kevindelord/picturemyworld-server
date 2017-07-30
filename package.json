@@ -4,7 +4,7 @@
   "description": "Travel blog",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha --timeout 10000",
     "start": "node index.js",
     "createDB": "node scripts/createDatabase.js",
     "populateDB": "node scripts/populateDatabase.js",
@@ -13,7 +13,7 @@
   "keywords": [
     "travel",
     "blog",
-    "test"
+    "image"
   ],
   "author": "Kevin Delord",
   "license": "ISC",
@@ -30,5 +30,10 @@
     "passport-local": "^1.0.0",
     "pg": "^7.0.2",
     "sanitizer": "^0.1.3"
+  },
+  "devDependencies": {
+    "mocha": "^3.4.2",
+    "chai": "^4.1.0",
+    "chai-http": "^3.0.0"
   }
 }
