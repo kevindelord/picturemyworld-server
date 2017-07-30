@@ -6,8 +6,8 @@ const bodyParser 	= require('body-parser');
 const config 		= require('config');
 const app 			= express();
 
-const environment = config.util.getEnv('NODE_ENV');
-const configured = ["development", "staging", "production"]
+const environment 	= config.util.getEnv('NODE_ENV');
+const configured 	= ["development", "test", "staging", "production"]
 if (!environment || configured.includes(environment) == false) {
 	console.log(`\nInvalid Node environment. Please use one of the following:`);
 	configured.forEach(function(element) {
@@ -38,3 +38,6 @@ app.listen(config.get("express.port"), (error) => {
 	}
 	console.log(`Server starting in '${environment}', now listening on port ${config.express.port}`);
 });
+
+// Export the server (app) for testing purposes.
+module.exports = app;
