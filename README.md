@@ -7,19 +7,19 @@ Framework: Node.js
 One script to rule them all! `setup.py`
 
 ```
-usage: setup.py [-h] -e ENV [-i] [-d] [-c] [-u UPLOAD] [-r]
+usage: setup.py [-h] -e ENV [-i] [-d] [-c] [-r] [-t]
 
 Initialize the NodeJS server for PictureMyWorld
 
 optional arguments:
-  -h, --help            show this help message and exit
-  -e ENV, --env ENV     Configure the deployment environment.
-  -i, --install         Install all node dependencies.
-  -d, --delete          Delete the database for the given deployment
-                        environment.
-  -c, --create          Create a new database for the given deployment
-                        environment.
-  -r, --run             Run the server.
+  -h, --help         show this help message and exit
+  -e ENV, --env ENV  Configure the deployment environment.
+  -i, --install      Install all node dependencies.
+  -d, --delete       Delete the database for the given deployment environment.
+  -c, --create       Create a new database for the given deployment
+                     environment.
+  -r, --run          Run the server.
+  -t, --test         Run the Unit-Tests.
 ```
 
 On first install execute:
@@ -38,6 +38,15 @@ And finally to run the NodeJs server, execute:
 ```
 
 Obviously you can use all arguments at once :]
+
+### Unit Tests
+
+To setup (and reset) the test environment:
+```
+./setup.py --env development --install --delete --create
+```
+
+Add the `--test` argument to run the tests.
 
 ### Postgres
 

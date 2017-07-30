@@ -8,30 +8,24 @@ parser.add_argument('-i','--install', help='Install all node dependencies.', def
 parser.add_argument('-d','--delete', help='Delete the database for the given deployment environment.', default=False, action='store_true')
 parser.add_argument('-c','--create', help='Create a new database for the given deployment environment.', default=False, action='store_true')
 parser.add_argument('-r','--run', help='Run the server.', default=False, action='store_true')
+parser.add_argument('-t','--test', help='Run the Unit-Tests.', default=False, action='store_true')
 
 args = parser.parse_args()
+setenv = "export NODE_ENV=" + args.env + " ; "
 
-def installDependencies():
-	if args.install:
-		os.system("npm install")
+# First install the dependencies.
+if args.install:
+	os.system(setenv + "npm install")
 	
-def configureDatabase():
-	if args.delete:
-		os.system("npm run deleteDB")
+# Then delete and/or create the database.
+if args.delete:
+	os.system(setenv + "npm run deleteDB")
 
-	if args.create:
-		os.system("npm run createDB")
+if args.create:
+	os.system(setenv + "npm run createDB")
 
-def configureDeployEnv():
-	env = args.env
-	os.system("export NODE_ENV=" + env)
-
-def run():
-	if 	args.run:
-		os.system("npm start")
-
-
-configureDeployEnv()
-installDependencies()
-configureDatabase()
-run()
+# Finally run the unit tests or the server itself.
+if args.run:
+	os.system(setenv + "npm start")
+elif args.test:
+	os.system(setenv + "npm test")
