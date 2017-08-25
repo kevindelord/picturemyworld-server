@@ -66,7 +66,6 @@ function loginUserWithCredentials(credentials, callback) {
 	});
 }
 
-
 function loginUserWithCredentialsAndErrorMessage(credentials, message, callback) {
 	chai.request(server)
 		.post('/login')

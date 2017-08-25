@@ -7,8 +7,16 @@ const LocalStrategy         = require('passport-local').Strategy;
 const postgreManager        = require('./../postgreManager');
 const config                = require('config');
 const session               = require('express-session');
-const authenticationMiddleware = require('./middleware');
+const middleware            = require('./middleware');
 const pgSession             = require('connect-pg-simple')(session);
+
+// TODO: is this required?
+passport.serializeUser(function (user, callback) {
+    callback(null, user.id);
+})
+passport.deserializeUser(function (email, callback) {
+    postgreManager.getUserByEmail(email, callback);
+})
 
 function verifyUser(email, password, callback) {
     postgreManager.getUserByEmail(email, function (error, user) {
@@ -32,8 +40,9 @@ function verifyUser(email, password, callback) {
 }
 
 function initPassport (app) {
-    passport.use(new LocalStrategy(verifyUser))
-    passport.authenticationMiddleware = authenticationMiddleware
+    passport.use(new LocalStrategy(verifyUser));
+    passport.authenticationMiddleware = middleware.authenticationRequired;
+    passport.emptySessionRequired = middleware.emptySessionRequired;
     // Documentation: https://github.com/expressjs/session
     // Documentation: https://www.npmjs.com/package/connect-pg-simple
     const cookieMaxAge = (config.get("passport.cookieMaxAgeInDays") * 24 * 60 * 60 * 1000); // In seconds

@@ -36,6 +36,18 @@ describe('LOGIN Users', () => {
 		});
 	});
 
+	describe('POST /login - incorrect second login', () => {
+		it('should not log a user in if already logged in', (done) => {
+			// Login default user
+			let credentials = { username: seed.first_user.email, password: seed.first_user.password };
+			utils.loginUserWithCredentials(credentials, function () {
+				utils.loginUserWithCredentialsAndErrorMessage(credentials, "Already logged in", function () {
+					done();
+				});
+			});
+		});
+	});
+
 	describe('POST /login - invalid credentials', () => {
 		let data = [
 			{ reason: 'wrong password', credentials: { username: seed.first_user.email, password: "wrong_password" } },
@@ -49,7 +61,7 @@ describe('LOGIN Users', () => {
 
 		for (let user of data) {
 			it(`should not log user in with ${user.reason} and return an error`, (done) => {
-				utils.loginUserWithCredentialsAndErrorMessage(user.credentials, "Invalid credentials.", function () {
+				utils.loginUserWithCredentialsAndErrorMessage(user.credentials, "Invalid credentials", function () {
 					done();
 				});
 			});
@@ -71,5 +83,5 @@ describe('LOGIN Users', () => {
 				});
 			});
 		});
-	});	
+	});
 });
