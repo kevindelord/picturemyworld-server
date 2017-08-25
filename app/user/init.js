@@ -5,11 +5,18 @@ const passport = require('passport');
 
 function initUser (app) {
 
-	app.post('/login', passport.authenticate('local', {
-		// Set `failureFlash` option to true to flash an error message using the message given by the strategy's verify callback. 
-		failureFlash: true
-	}), function (request, response) {
-		return response.status(200).json({"status": 200, "message": "success"});
+	app.post('/login', function(request, response) {
+		passport.authenticate('local', function(error, user) {
+			if (error) {
+				return response.status(500).json({"status": 500, "message": `ERROR ${error.code}: ${error}`}); // Unknown error
+			}
+			// Invalid credentials or request
+			if (!user) {
+				return response.status(401).json({"status": 401, "message": "Invalid credentials."});
+			}
+			// Only in case of success
+			return response.status(200).json({"status": 200, "message": "success"});
+		})(request, response);
 	});
 
 	app.get('/logout', function(request, response) {

@@ -10,18 +10,10 @@ const session               = require('express-session');
 const authenticationMiddleware = require('./middleware');
 const pgSession             = require('connect-pg-simple')(session);
 
-passport.serializeUser(function (user, callback) {
-    callback(null, user.id);
-})
-
-passport.deserializeUser(function (email, callback) {
-    postgreManager.getUserByEmail(email, callback);
-})
-
 function verifyUser(email, password, callback) {
     postgreManager.getUserByEmail(email, function (error, user) {
         if (error) {
-            return callback(error);
+            return callback(error); // Unknown error
         }
         if (!user || user.length == 0) {
             return callback(null, false);
@@ -42,7 +34,6 @@ function verifyUser(email, password, callback) {
 function initPassport (app) {
     passport.use(new LocalStrategy(verifyUser))
     passport.authenticationMiddleware = authenticationMiddleware
-
     // Documentation: https://github.com/expressjs/session
     // Documentation: https://www.npmjs.com/package/connect-pg-simple
     const cookieMaxAge = (config.get("passport.cookieMaxAgeInDays") * 24 * 60 * 60 * 1000); // In seconds

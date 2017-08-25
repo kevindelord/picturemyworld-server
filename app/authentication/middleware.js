@@ -6,7 +6,7 @@ function authenticationMiddleware () {
 		if (request.isAuthenticated()) {
 			return next()
 		} else {
-			return response.status(401).json({"status": 401, "message": "Unauthorized"})
+			return response.status(403).json({"status": 403, "message": "Unauthorized"})
 		}
 	}
 }

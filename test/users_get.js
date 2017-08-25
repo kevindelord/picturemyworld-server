@@ -23,7 +23,15 @@ describe('GET Users', () => {
 		});
 	});
 
-	describe('/GET multiple users', () => {
+	describe('GET /users - empty database', () => {
+		it('should GET no user as DB is empty', (done) => {
+			utils.checkNumberOfUsers(0, function() {
+				done();
+			});
+		});
+	});
+
+	describe('GET /users - multiple users', () => {
 		it('should POST two users', (done) => {
 			// create first user
 			utils.createUser(seed.first_user, function() {
@@ -41,7 +49,7 @@ describe('GET Users', () => {
 		});
 	});
 
-	describe('/GET single user', () => {
+	describe('GET /users - create and verify data', () => {
 		it('should POST one user and GET valid info', (done) => {
 			// create first user
 			utils.createUser(seed.first_user, function() {

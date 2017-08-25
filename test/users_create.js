@@ -23,7 +23,7 @@ describe('CREATE Users', () => {
 		});
 	});
 
-	describe('/POST users', () => {
+	describe('POST /users - single user', () => {
 		it('should POST a new user and GET its info', (done) => {
 			utils.createUser(seed.first_user, function() {
 				// should GET only 1 user
@@ -34,15 +34,7 @@ describe('CREATE Users', () => {
 		});
 	});
 
-	describe('/GET users', () => {
-		it('should GET no user as DB is empty', (done) => {
-			utils.checkNumberOfUsers(0, function() {
-				done();
-			});
-		});
-	});
-
-	describe('/POST existing user', () => {
+	describe('POST /users - existing user', () => {
 		it('should POST the same user twice and returns an error', (done) => {
 			utils.createUser(seed.first_user, function() {
 				// POST the same user again and check the error.
@@ -53,7 +45,7 @@ describe('CREATE Users', () => {
 		});
 	});
 
-	describe('/POST invalid users', () => {
+	describe('POST /users - invalid users', () => {
 		let data = [
 			{ json: seed.user_with_missing_email, reason: 'missing email', message: 'ERROR: Missing parameter' },
 			{ json: seed.user_with_missing_password, reason: 'missing password', message: 'ERROR: Missing parameter' },
@@ -64,7 +56,7 @@ describe('CREATE Users', () => {
 			{ json: seed.user_with_invalid_email, reason: 'invalid email', message: 'ERROR: Invalid email' }
 		]
 		for (let user of data) {
-			it(`should POST invalid user with ${user.reason} and returns an error`, (done) => {
+			it(`should POST invalid user with ${user.reason} and return an error`, (done) => {
 				utils.createUserWithErrorMessage(user.json, user.message, function() {
 					done();
 				});
