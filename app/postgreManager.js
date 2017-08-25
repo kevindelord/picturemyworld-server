@@ -35,13 +35,17 @@ function getUserByEmail(email, callback) {
 }
 
 // Delete a user by its email (unique in DB) with a prepared statement.
-function deleteUserByEmail(email, callback) {
+function deleteUsersByEmails(emails, callback) {
+	for (var i = 0; i < emails.length; i++) {
+		// Sanitize all user inputs.
+		emails[i] = sanitizer.sanitize(emails[i])
+	};
+
 	const query = {
-		name: 'delete-user-by-email',
-		text: 'DELETE FROM users WHERE (email = $1)',
+		name: 'delete-users-by-emails',
+		text: 'DELETE FROM users WHERE (email = ANY($1::text[]))',
 		values: [
-			// Sanitize all user inputs.
-			sanitizer.sanitize(email)
+			emails
 		]
 	};
 	executeQueryWithParameters(query, callback);
@@ -140,6 +144,6 @@ module.exports.createUser = createUser;
 module.exports.getUsers = getUsers;
 module.exports.getPosts = getPosts;
 module.exports.getUserByEmail = getUserByEmail;
-module.exports.deleteUserByEmail = deleteUserByEmail;
+module.exports.deleteUsersByEmails = deleteUsersByEmails;
 module.exports.createImagePost = createImagePost;
 module.exports.connectURL = connectURL;

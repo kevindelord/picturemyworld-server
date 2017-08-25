@@ -108,3 +108,4 @@ ncu -u
 - https://www.adminer.org/
 - https://www.postgresql.org/ftp/pgadmin/pgadmin4/v1.5/macos/
 - http://docs.python-requests.org/en/latest/user/quickstart/#post-a-multipart-encoded-file
+- https://gist.github.com/yoavniran/1e3b0162e1545055429e#chai
