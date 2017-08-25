@@ -34,6 +34,19 @@ function getUserByEmail(email, callback) {
 	executeQueryWithParameters(query, callback);
 }
 
+// Delete a user by its email (unique in DB) with a prepared statement.
+function deleteUserByEmail(email, callback) {
+	const query = {
+		name: 'delete-user-by-email',
+		text: 'DELETE FROM users WHERE (email = $1)',
+		values: [
+			// Sanitize all user inputs.
+			sanitizer.sanitize(email)
+		]
+	};
+	executeQueryWithParameters(query, callback);
+}
+
 // Fetch all users with a prepared statement.
 function getUsers(callback) {
 	const query = {
@@ -127,5 +140,6 @@ module.exports.createUser = createUser;
 module.exports.getUsers = getUsers;
 module.exports.getPosts = getPosts;
 module.exports.getUserByEmail = getUserByEmail;
+module.exports.deleteUserByEmail = deleteUserByEmail;
 module.exports.createImagePost = createImagePost;
 module.exports.connectURL = connectURL;
