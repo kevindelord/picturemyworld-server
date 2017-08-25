@@ -86,6 +86,7 @@ To list all tables:
 | sanitizer   | 0.1.3       | To sanitize user input |
 | multer      | 1.3.0       | Middleware for handling multipart/form-data |
 | config      | 1.26.1      | Configurations for app deployments |
+| validator   | 8.1.0       | String validators and sanitizers |
 
 ### To check and update dependencies
 

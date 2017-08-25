@@ -1,4 +1,4 @@
-// file:/test/authentification.js
+// file:/test/user_create.js
 
 const chai      = require('chai');
 const chaiHttp  = require('chai-http');
@@ -6,6 +6,7 @@ const server    = require('../app/index');
 const manager	= require('../app/postgreManager');
 
 let should = chai.should();
+
 let seed = {
 	normal_user: {
 		email: 'test@mail.com',
@@ -127,7 +128,7 @@ describe('Users', () => {
 		});
 	});
 
-	describe('/POST invalid user', () => {
+	describe('/POST existing user', () => {
 		it('should POST the same user twice and returns an error', (done) => {
 			createUser(seed.normal_user, function() {
 				// POST the same user again and check the error.
