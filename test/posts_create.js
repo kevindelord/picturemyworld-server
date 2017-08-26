@@ -67,6 +67,13 @@ describe('CREATE Posts', () => {
 		});
 	});
 
+	describe('POST /posts - simple post', () => {
+		it('should create an invalid image post with wrong image type', (done) => {
+			let message = "ERROR undefined: Error: File upload only supports the following filetypes - /jpeg|jpg|png/"
+			utils.createImagePostWithError(seed.posts.default, seed.posts.images.invalid, _cookie, 400, message, done);
+		});
+	})
+
 	// Error Cases
 	// - no create when logged out
 	// - Send document which is not an image

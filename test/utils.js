@@ -8,7 +8,9 @@ const supertest	= require('supertest');
 const should 	= chai.should();
 const request 	= supertest(server);
 
+//
 // Direct access to database
+//
 
 function deleteUsersByEmails(emails, callback) {
 	manager.deleteUsersByEmails(emails, function(error, result) {
@@ -26,7 +28,11 @@ function deleteAllPostsForUser(user, callback) {
 	});
 };
 
+//
 // API requests
+//
+
+// User creation
 
 function checkNumberOfUsers(number, callback) {
 	request
@@ -45,36 +51,30 @@ function checkNumberOfUsers(number, callback) {
 };
 
 function createUser(user, callback) {
-	request
-		.post('/users')
-		.set('content-type', 'application/x-www-form-urlencoded')
-		.send(user)
-		.expect('Content-Type', /json/)
-		.expect(200)
-		.end(function(error, response) {
-			should.not.exist(error);
-			should.exist(response);
-			response.body.should.have.property('status').equal(200);
-			response.body.should.have.property('message').equal('successfully registered')
-			callback();	
-	});
+	_createUser(user, 200, 'successfully registered', callback);
 };
 
 function createUserWithErrorMessage(user, message, callback) {
+	_createUser(user, 400, message, callback);
+};
+
+function _createUser(user, code, message, callback) {
 	request
 		.post('/users')
 		.set('content-type', 'application/x-www-form-urlencoded')
 		.send(user)
 		.expect('Content-Type', /json/)
-		.expect(400)
+		.expect(code)
 		.end(function(error, response) {
 			should.not.exist(error);
 			should.exist(response);
-			response.body.should.have.property('status').equal(400);
-			response.body.should.have.property('message').equal(message);
+			response.body.should.have.property('status').equal(code);
+			response.body.should.have.property('message').equal(message)
 			callback();
 	});
 };
+
+// Authentification
 
 function getCookie(response) {
 	return response.headers['set-cookie'].map(function(r) {
@@ -82,94 +82,94 @@ function getCookie(response) {
     }).join("; ");
 };
 
+// Login
+
 function loginUser(credentials, cookie, callback) {
-	request
-		.post('/login')
-		.set('Cookie', cookie)
-		.set('content-type', 'application/x-www-form-urlencoded')
-		.send(credentials)
-		.expect('Content-Type', /json/)
-		.expect(200)
-		.end(function(error, response) {
-			should.not.exist(error);
-			should.exist(response);
-			response.body.should.have.property('status').equal(200);
-			response.body.should.have.property('message').equal('success');
-			callback(getCookie(response));
-	});
+	_login(credentials, 200, 'success', cookie, callback);
 };
 
 function loginUserWithErrorMessage(credentials, message, cookie, callback) {
+	_login(credentials, 401, message, cookie, callback);
+};
+
+function _login(credentials, code, message, cookie, callback) {
 	request
 		.post('/login')
 		.set('Cookie', cookie)
 		.set('content-type', 'application/x-www-form-urlencoded')
 		.send(credentials)
 		.expect('Content-Type', /json/)
-		.expect(401)
+		.expect(code)
 		.end(function(error, response) {
 			should.not.exist(error);
 			should.exist(response);
-			response.body.should.have.property('status').equal(401);
+			response.body.should.have.property('status').equal(code);
+			response.body.should.have.property('message').equal(message);
+			if (code == 200) {
+				callback(getCookie(response));
+			} else {
+				callback();
+			}
+	});
+};
+
+// Logout
+
+function logoutUser(cookie, callback) {
+	_logout(cookie, 200, 'successfully logged out', callback);
+};
+
+function logoutUserWithError(cookie, callback) {
+	_logout(cookie, 403, 'Unauthorized', callback);
+};
+
+function _logout(cookie, code, message, callback) {
+	request
+		.get('/logout')
+		.set('Cookie', cookie)
+		.expect('Content-Type', /json/)
+		.expect(code)
+		.end(function(error, response) {
+			should.not.exist(error);
+			should.exist(response);
+			response.body.should.have.property('status').equal(code);
 			response.body.should.have.property('message').equal(message);
 			callback();
 	});
 };
 
-function logoutUser(cookie, callback) {
-	request
-		.get('/logout')
-		.set('Cookie', cookie)
-		.expect('Content-Type', /json/)
-		.expect(200)
-		.end(function(error, response) {
-			should.not.exist(error);
-			should.exist(response);
-			response.body.should.have.property('status').equal(200);
-			response.body.should.have.property('message').equal('successfully logged out');
-			callback();
-	});
-};
-
-function logoutUserWithError(cookie, callback) {
-	request
-		.get('/logout')
-		.set('Cookie', cookie)
-		.expect('Content-Type', /json/)
-		.expect(403)
-		.end(function(error, response) {
-			should.not.exist(error);
-			should.exist(response);
-			response.body.should.have.property('status').equal(403);
-			response.body.should.have.property('message').equal('Unauthorized');
-			callback();
-	});
-};
+// Image Post
 
 function createImagePost(json, imagePath, cookie, callback) {
+	createImagePostWithError(json, imagePath, cookie, 200, 'New post successfully created', callback);
+};
+
+function createImagePostWithError(json, imagePath, cookie, errorCode, errorMessage, callback) {
 	request
 		.post('/post')
 		.set('Cookie', cookie)
-        .field('title', json.title)
-        .field('description', json.description)
-        .field('ratio', json.ratio)
-        .field('location', json.location)
-        .field('lat', json.lat)
-        .field('lng', json.lng)
-        .field('date', json.date)
-        .attach('image', imagePath)
+		.field('title', json.title)
+		.field('description', json.description)
+		.field('ratio', json.ratio)
+		.field('location', json.location)
+		.field('lat', json.lat)
+		.field('lng', json.lng)
+		.field('date', json.date)
+		.attach('image', imagePath)
 		.expect('Content-Type', /json/)
-		.expect(200)
+		.expect(errorCode)
 		.end(function(error, response) {
 			should.not.exist(error);
 			should.exist(response);
-			response.body.should.have.property('status').equal(200);
-			response.body.should.have.property('message').equal('New post successfully created');
+			response.body.should.have.property('status').equal(errorCode);
+			response.body.should.have.property('message').equal(errorMessage);
 			callback();
 	});
 };
 
+//
 // Module exports
+//
 
 module.exports.createImagePost = createImagePost;
 module.exports.deleteAllPostsForUser = deleteAllPostsForUser;
@@ -181,3 +181,4 @@ module.exports.createUser = createUser;
 module.exports.logoutUser = logoutUser;
 module.exports.logoutUserWithError = logoutUserWithError;
 module.exports.deleteUsersByEmails = deleteUsersByEmails;
+module.exports.createImagePostWithError = createImagePostWithError;

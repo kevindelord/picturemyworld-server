@@ -11,7 +11,7 @@ describe('CREATE Users', () => {
 
 	// Reset all users before each test (ie. each `it()` block).
 	beforeEach((done) => {
-		utils.deleteUsersByEmails([seed.first_user.email], done);
+		utils.deleteUsersByEmails([seed.first_user.email, seed.second_user.email], done);
 	});
 
 	describe('POST /users - single user', () => {

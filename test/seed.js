@@ -65,7 +65,8 @@ let seed = {
 		},
 		images: {
 			default: 'scripts/images/ruins.jpg',
-			second: 'scripts/images/ocean.jpg'
+			second: 'scripts/images/ocean.jpg',
+			invalid: 'README.md'
 		}
 	}
 };
