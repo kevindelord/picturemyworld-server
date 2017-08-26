@@ -8,6 +8,8 @@ const supertest	= require('supertest');
 const should 	= chai.should();
 const request 	= supertest(server);
 
+// Direct access to database
+
 function deleteUsersByEmails(emails, callback) {
 	manager.deleteUsersByEmails(emails, function(error, result) {
 		should.not.exist(error);
@@ -15,6 +17,16 @@ function deleteUsersByEmails(emails, callback) {
 		callback();
 	});
 };
+
+function deleteAllPostsForUser(user, callback) {
+	manager.deleteAllPostsForUser(user, function(error, result) {
+		should.not.exist(error);
+		should.exist(result);
+		callback();
+	});
+};
+
+// API requests
 
 function checkNumberOfUsers(number, callback) {
 	request
@@ -70,7 +82,7 @@ function getCookie(response) {
     }).join("; ");
 };
 
-function loginUserWithCredentials(credentials, cookie, callback) {
+function loginUser(credentials, cookie, callback) {
 	request
 		.post('/login')
 		.set('Cookie', cookie)
@@ -87,7 +99,7 @@ function loginUserWithCredentials(credentials, cookie, callback) {
 	});
 };
 
-function loginUserWithCredentialsAndErrorMessage(credentials, message, cookie, callback) {
+function loginUserWithErrorMessage(credentials, message, cookie, callback) {
 	request
 		.post('/login')
 		.set('Cookie', cookie)
@@ -134,14 +146,6 @@ function logoutUserWithError(cookie, callback) {
 	});
 };
 
-function deleteAllPostsForUser(user, callback) {
-	manager.deleteAllPostsForUser(user, function(error, result) {
-		should.not.exist(error);
-		should.exist(result);
-		callback();
-	});
-};
-
 function createImagePost(json, imagePath, cookie, callback) {
 	request
 		.post('/post')
@@ -165,10 +169,12 @@ function createImagePost(json, imagePath, cookie, callback) {
 	});
 };
 
+// Module exports
+
 module.exports.createImagePost = createImagePost;
 module.exports.deleteAllPostsForUser = deleteAllPostsForUser;
-module.exports.loginUserWithCredentialsAndErrorMessage = loginUserWithCredentialsAndErrorMessage;
-module.exports.loginUserWithCredentials = loginUserWithCredentials;
+module.exports.loginUserWithErrorMessage = loginUserWithErrorMessage;
+module.exports.loginUser = loginUser;
 module.exports.createUserWithErrorMessage = createUserWithErrorMessage;
 module.exports.checkNumberOfUsers = checkNumberOfUsers;
 module.exports.createUser = createUser;

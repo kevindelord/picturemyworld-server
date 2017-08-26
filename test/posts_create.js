@@ -28,7 +28,7 @@ describe('CREATE Posts', () => {
 			utils.deleteAllPostsForUser(seed.second_user, function() {
 				// Login with first seed user account.
 				let credentials = { username: seed.first_user.email, password: seed.first_user.password };
-				utils.loginUserWithCredentials(credentials, null, function(cookie) {
+				utils.loginUser(credentials, null, function(cookie) {
 					_cookie = cookie
 					done();
 				});
@@ -60,7 +60,7 @@ describe('CREATE Posts', () => {
 		it('should logout and login with another account and create a new post', (done) => {
 			utils.logoutUser(_cookie, function() {
 				let credentials = { username: seed.second_user.email, password: seed.second_user.password };
-				utils.loginUserWithCredentials(credentials, null, function(cookie) {
+				utils.loginUser(credentials, null, function(cookie) {
 					utils.createImagePost(seed.posts.second, seed.posts.images.second, cookie, done);	
 				});
 			});

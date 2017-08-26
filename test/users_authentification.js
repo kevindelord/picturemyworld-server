@@ -21,7 +21,7 @@ describe('LOGIN Users', () => {
 		it('should log default user in', (done) => {
 			// Login default user
 			let credentials = { username: seed.first_user.email, password: seed.first_user.password };
-			utils.loginUserWithCredentials(credentials, null, function(cookie) {
+			utils.loginUser(credentials, null, function(cookie) {
 				done();
 			});
 		});
@@ -31,8 +31,8 @@ describe('LOGIN Users', () => {
 		it('should not log a user in if already logged in', (done) => {
 			// Login default user
 			let credentials = { username: seed.first_user.email, password: seed.first_user.password };
-			utils.loginUserWithCredentials(credentials, null, function(cookie) {
-				utils.loginUserWithCredentialsAndErrorMessage(credentials, "Already logged in", cookie, done);
+			utils.loginUser(credentials, null, function(cookie) {
+				utils.loginUserWithErrorMessage(credentials, "Already logged in", cookie, done);
 			});
 		});
 	});
@@ -50,7 +50,7 @@ describe('LOGIN Users', () => {
 
 		for (let user of data) {
 			it(`should not log user in with ${user.reason} and return an error`, (done) => {
-				utils.loginUserWithCredentialsAndErrorMessage(user.credentials, "Invalid credentials", null, done);
+				utils.loginUserWithErrorMessage(user.credentials, "Invalid credentials", null, done);
 			});
 		};		
 	});
@@ -60,11 +60,11 @@ describe('LOGIN Users', () => {
 			// Login default user
 			let credentials = { username: seed.first_user.email, password: seed.first_user.password };
 			// First login
-			utils.loginUserWithCredentials(credentials, null, function(cookie) {
+			utils.loginUser(credentials, null, function(cookie) {
 				// Logout
 				utils.logoutUser(cookie, function() {
 					// Second login
-					utils.loginUserWithCredentials(credentials, null, function(cookie) {
+					utils.loginUser(credentials, null, function(cookie) {
 						done();
 					});
 				});
@@ -77,7 +77,7 @@ describe('LOGIN Users', () => {
 			// Login default user
 			let credentials = { username: seed.first_user.email, password: seed.first_user.password };
 			// Login
-			utils.loginUserWithCredentials(credentials, null, function(cookie) {
+			utils.loginUser(credentials, null, function(cookie) {
 				// First logout
 				utils.logoutUser(cookie, function() {
 					// Second logout
@@ -90,7 +90,7 @@ describe('LOGIN Users', () => {
 			// Login default user
 			let credentials = { username: seed.first_user.email, password: seed.first_user.password };
 			// Login
-			utils.loginUserWithCredentials(credentials, null, function(cookie) {
+			utils.loginUser(credentials, null, function(cookie) {
 				// First logout
 				utils.logoutUserWithError(null, done);
 			});
