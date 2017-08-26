@@ -72,21 +72,33 @@ To list all tables:
 
 ### List of dependencies
 
+#### Production
+
 | Name        | Version     | Summary |
 |:------------|:------------|:---------|
 | bcryptjs    | 2.4.3       | To encrypt/decrypt the user password |
 | body-parser | 1.17.2      | Parse incoming request bodies |
-| pg          | 7.0.2       | To interact with PostgreSQL |
+| config      | 1.26.1      | Configurations for app deployments |
 | connect-pg-simple | 4.2.0 | To easy connect to PostgreSQL |
 | express     | 4.15.3      | Minimalist web framework |
 | express-handlebars | 3.0.0 | View engine for Express |
 | express-session | 1.15.3  | Session middleware |
+| multer      | 1.3.0       | Middleware for handling multipart/form-data |
 | passport    | 0.3.2       | For the login authentification |
 | passport-local | 1.0.0    | Local username and password authentication strategy for Passport |
+| pg          | 7.0.2       | To interact with PostgreSQL |
 | sanitizer   | 0.1.3       | To sanitize user input |
-| multer      | 1.3.0       | Middleware for handling multipart/form-data |
-| config      | 1.26.1      | Configurations for app deployments |
 | validator   | 8.1.0       | String validators and sanitizers |
+
+#### Development
+
+| Name        | Version     | Summary |
+|:------------|:------------|:---------|
+| chai        | 4.1.0       | Assertion library for unit testing |
+| mocha       | 3.4.2       | JavaScript test framework for node.js |
+| nyc         | 11.1.0      | JS code coverage tool |
+| supertest   | 3.0.0       | HTTP assertions library | 
+
 
 ### To check and update dependencies
 
