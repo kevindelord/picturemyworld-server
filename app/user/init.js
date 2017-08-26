@@ -4,16 +4,28 @@
 const passport = require('passport');
 
 function loginUser(request, response) {
+	if (request.isAuthenticated()) {
+		// Check if the user is not already logged in.
+		return response.status(403).json({"status": 403, "message": "Already logged in"});
+	}
+
 	passport.authenticate('local', function(error, user) {
 		if (error) {
 			return response.status(500).json({"status": 500, "message": `ERROR ${error.code}: ${error}`}); // Unknown error
 		}
-		// Invalid credentials or request
+
 		if (!user) {
+			// Invalid credentials or request
 			return response.status(401).json({"status": 401, "message": "Invalid credentials"});
 		}
-		// Only in case of success
-		return response.status(200).json({"status": 200, "message": "success"});
+		request.logIn(user, function(error) {
+			if (error) {
+				return response.status(500).json({"status": 500, "message": `ERROR ${error.code}: ${error}`}); // Unknown error
+			}
+
+			// Only in case of success
+			return response.status(200).json({"status": 200, "message": "success"});
+		});
 	})(request, response);
 };
 
@@ -22,9 +34,9 @@ function logout(request, response) {
 	return response.status(200).json({"status": 200, "message": "successfully logged out"});
 };
 
-function initUser (app) {
-	app.post('/login', passport.emptySessionRequired(), loginUser);
+function initUser(app) {
+	app.post('/login', loginUser);
 	app.get('/logout', logout);
 }
 
-module.exports = initUser
+module.exports = initUser;

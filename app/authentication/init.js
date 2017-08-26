@@ -10,10 +10,14 @@ const session               = require('express-session');
 const middleware            = require('./middleware');
 const pgSession             = require('connect-pg-simple')(session);
 
-// TODO: is this required?
+/**
+ * Each subsequent request will contain a unique cookie that identifies the session.
+ * In order to support login sessions, Passport will serialize and deserialize user instances to and from the session.
+ */
 passport.serializeUser(function (user, callback) {
     callback(null, user.id);
 })
+
 passport.deserializeUser(function (email, callback) {
     postgreManager.getUserByEmail(email, callback);
 })
@@ -41,8 +45,8 @@ function verifyUser(email, password, callback) {
 
 function initPassport (app) {
     passport.use(new LocalStrategy(verifyUser));
-    passport.authenticationMiddleware = middleware.authenticationRequired;
-    passport.emptySessionRequired = middleware.emptySessionRequired;
+    passport.activeSessionRequired = middleware.activeSessionRequired;
+
     // Documentation: https://github.com/expressjs/session
     // Documentation: https://www.npmjs.com/package/connect-pg-simple
     const cookieMaxAge = (config.get("passport.cookieMaxAgeInDays") * 24 * 60 * 60 * 1000); // In seconds

@@ -66,8 +66,8 @@ function initUploadFolder() {
 function initPosts (app) {
 	initUploadFolder();
 
-	app.get('/posts', passport.authenticationMiddleware(), getPosts);
-	app.post('/post', passport.authenticationMiddleware(), createPost);
+	app.get('/posts', passport.activeSessionRequired(), getPosts);
+	app.post('/post', passport.activeSessionRequired(), createPost);
 }
 
 module.exports = initPosts;
