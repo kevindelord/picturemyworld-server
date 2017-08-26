@@ -84,4 +84,33 @@ describe('LOGIN Users', () => {
 			});
 		});
 	});
+
+	describe('GET /logout - without active session', () => {
+		it('should not logout twice in a row with same cookie', (done) => {
+			// Login default user
+			let credentials = { username: seed.first_user.email, password: seed.first_user.password };
+			// Login
+			utils.loginUserWithCredentials(credentials, null, function(cookie) {
+				// First logout
+				utils.logoutUser(cookie, function() {
+					// Second logout
+					utils.logoutUserWithError(cookie, function() {
+						done();
+					});
+				});
+			});
+		});
+
+		it('should not logout without cookie', (done) => {
+			// Login default user
+			let credentials = { username: seed.first_user.email, password: seed.first_user.password };
+			// Login
+			utils.loginUserWithCredentials(credentials, null, function(cookie) {
+				// First logout
+				utils.logoutUserWithError(null, function() {
+					done();
+				});
+			});
+		});
+	});
 });

@@ -104,9 +104,25 @@ function logoutUser(cookie, callback) {
 	});
 };
 
+function logoutUserWithError(cookie, callback) {
+	chai.request(server)
+		.get('/logout')
+		.set('Cookie', cookie)
+		.end((error, response) => {
+			should.exist(error);
+			should.exist(response);
+			error.should.have.status(403);
+			response.should.have.status(403);
+			response.should.be.json;
+			response.body.should.have.property('message').equal('Unauthorized');
+			callback();
+	});
+};
+
 module.exports.loginUserWithCredentialsAndErrorMessage = loginUserWithCredentialsAndErrorMessage;
 module.exports.loginUserWithCredentials = loginUserWithCredentials;
 module.exports.createUserWithErrorMessage = createUserWithErrorMessage;
 module.exports.checkNumberOfUsers = checkNumberOfUsers;
 module.exports.createUser = createUser;
 module.exports.logoutUser = logoutUser;
+module.exports.logoutUserWithError = logoutUserWithError;
