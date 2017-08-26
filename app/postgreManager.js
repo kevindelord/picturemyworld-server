@@ -53,7 +53,7 @@ function deleteUsersByEmails(emails, callback) {
 
 // Delete posts by their ids (unique in DB) with a prepared statement.
 function deletePostsByIds(ids, callback) {
-	// TODO: test
+	// TODO: test with the GET/READ posts TDD
 	for (var i = 0; i < ids.length; i++) {
 		// Sanitize all user inputs.
 		ids[i] = sanitizer.sanitize(ids[i])
@@ -71,7 +71,7 @@ function deletePostsByIds(ids, callback) {
 
 // Delete all posts for user with a prepared statement.
 function deleteAllPostsForUser(user, callback) {
-	// TODO: test
+	// TODO: test with the GET/READ posts TDD
 	const query = {
 		name: 'delete-all-posts-for-user',
 		text: 'DELETE FROM posts WHERE (user_id_fkey = (SELECT id FROM users WHERE (email = $1)));',
