@@ -34,7 +34,7 @@ function getUserByEmail(email, callback) {
 	executeQueryWithParameters(query, callback);
 }
 
-// Delete a user by its email (unique in DB) with a prepared statement.
+// Delete users by their emails (unique in DB) with a prepared statement.
 function deleteUsersByEmails(emails, callback) {
 	for (var i = 0; i < emails.length; i++) {
 		// Sanitize all user inputs.
@@ -46,6 +46,37 @@ function deleteUsersByEmails(emails, callback) {
 		text: 'DELETE FROM users WHERE (email = ANY($1::text[]))',
 		values: [
 			emails
+		]
+	};
+	executeQueryWithParameters(query, callback);
+}
+
+// Delete posts by their ids (unique in DB) with a prepared statement.
+function deletePostsByIds(ids, callback) {
+	// TODO: test
+	for (var i = 0; i < ids.length; i++) {
+		// Sanitize all user inputs.
+		ids[i] = sanitizer.sanitize(ids[i])
+	};
+
+	const query = {
+		name: 'delete-posts-by-ids',
+		text: 'DELETE FROM posts WHERE (id = ANY($1::text[]))',
+		values: [
+			ids
+		]
+	};
+	executeQueryWithParameters(query, callback);
+}
+
+// Delete all posts for user with a prepared statement.
+function deleteAllPostsForUser(user, callback) {
+	// TODO: test
+	const query = {
+		name: 'delete-all-posts-for-user',
+		text: 'DELETE FROM posts WHERE (user_id_fkey = (SELECT id FROM users WHERE (email = $1)));',
+		values: [
+			sanitizer.sanitize(user.email)
 		]
 	};
 	executeQueryWithParameters(query, callback);
@@ -147,3 +178,5 @@ module.exports.getUserByEmail = getUserByEmail;
 module.exports.deleteUsersByEmails = deleteUsersByEmails;
 module.exports.createImagePost = createImagePost;
 module.exports.connectURL = connectURL;
+module.exports.deleteAllPostsForUser = deleteAllPostsForUser;
+module.exports.deletePostsByIds = deletePostsByIds;

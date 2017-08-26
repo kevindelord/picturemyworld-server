@@ -2,27 +2,18 @@
 'use strict';
 
 const chai      = require('chai');
-const chaiHttp  = require('chai-http');
 const server    = require('../app/index');
-const manager	= require('../app/postgreManager');
 const utils 	= require('./utils');
 const seed 		= require('./seed');
-
-let should = chai.should();
-
-chai.use(chaiHttp);
+const should 	= chai.should();
 
 describe('LOGIN Users', () => {
 
 	// Reset all users before each test (ie. each `it()` block).
 	beforeEach((done) => {
-		manager.deleteUsersByEmails([seed.first_user.email, seed.second_user.email], function(error, result) {
-			should.not.exist(error);
-			should.exist(result);
+		utils.deleteUsersByEmails([seed.first_user.email, seed.second_user.email], function() {
 			// Create default user for local test cases
-			utils.createUser(seed.first_user, function() {
-				done();
-			});
+			utils.createUser(seed.first_user, done);
 		});
 	});
 
@@ -41,16 +32,14 @@ describe('LOGIN Users', () => {
 			// Login default user
 			let credentials = { username: seed.first_user.email, password: seed.first_user.password };
 			utils.loginUserWithCredentials(credentials, null, function(cookie) {
-				utils.loginUserWithCredentialsAndErrorMessage(credentials, "Already logged in", cookie, function() {
-					done();
-				});
+				utils.loginUserWithCredentialsAndErrorMessage(credentials, "Already logged in", cookie, done);
 			});
 		});
 	});
 
 	describe('POST /login - invalid credentials', () => {
 		let data = [
-			{ reason: 'wrong password', credentials: { username: seed.first_user.email, password: "wrong_password" } },
+			{ reason: 'wrong password', credentials: { username: seed.first_user.email, password: 'wrong_password' } },
 			{ reason: 'username and password', credentials: { username: seed.first_user.username, password: seed.first_user.password } },
 			{ reason: 'email and username', credentials: { username: seed.first_user.username, email: seed.first_user.email } },
 			{ reason: 'missing password field', credentials: { username: seed.first_user.email } },
@@ -61,9 +50,7 @@ describe('LOGIN Users', () => {
 
 		for (let user of data) {
 			it(`should not log user in with ${user.reason} and return an error`, (done) => {
-				utils.loginUserWithCredentialsAndErrorMessage(user.credentials, "Invalid credentials", null, function() {
-					done();
-				});
+				utils.loginUserWithCredentialsAndErrorMessage(user.credentials, "Invalid credentials", null, done);
 			});
 		};		
 	});
@@ -94,9 +81,7 @@ describe('LOGIN Users', () => {
 				// First logout
 				utils.logoutUser(cookie, function() {
 					// Second logout
-					utils.logoutUserWithError(cookie, function() {
-						done();
-					});
+					utils.logoutUserWithError(cookie, done);
 				});
 			});
 		});
@@ -107,9 +92,7 @@ describe('LOGIN Users', () => {
 			// Login
 			utils.loginUserWithCredentials(credentials, null, function(cookie) {
 				// First logout
-				utils.logoutUserWithError(null, function() {
-					done();
-				});
+				utils.logoutUserWithError(null, done);
 			});
 		});
 	});

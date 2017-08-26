@@ -44,6 +44,20 @@ let seed = {
 		username: 'superpass',
 		password: 'superpass'
 	},
+	posts: {
+		default: {
+			title: 'image_title',
+			description: 'ruins of chan chan',
+			ratio: '1.333',
+			location: 'Peru',
+			lat: '1.324567',
+			lng: '-42.45678',
+			date: '2017-03-04'
+		},
+		images: {
+			default: 'scripts/images/ruins.jpg',
+		}
+	}
 };
 
 module.exports = seed

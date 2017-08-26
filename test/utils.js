@@ -3,49 +3,62 @@
 
 const chai      = require('chai');
 const server    = require('../app/index');
+const manager	= require('../app/postgreManager');
+const supertest	= require('supertest');
+const should 	= chai.should();
+const request 	= supertest(server);
 
-let should = chai.should();
-
-function checkNumberOfUsers(number, callback) {
-	chai.request(server).get('/users').end((error, response) => {
+function deleteUsersByEmails(emails, callback) {
+	manager.deleteUsersByEmails(emails, function(error, result) {
 		should.not.exist(error);
-		should.exist(response);
-		response.should.have.status(200);
-		response.should.be.json;
-		response.body.should.have.property('users');
-		response.body.users.should.be.a('array');
-		response.body.users.should.have.lengthOf(number);
+		should.exist(result);
 		callback();
 	});
 };
 
+function checkNumberOfUsers(number, callback) {
+	request
+		.get('/users')
+		.expect('Content-Type', /json/)
+		.expect(200)
+		.end(function(error, response) {
+			should.not.exist(error);
+			should.exist(response);
+			response.body.should.have.property('status').equal(200);
+			response.body.should.have.property('users');
+			response.body.users.should.be.a('array');
+			response.body.users.should.have.lengthOf(number);
+			callback();
+	});
+};
+
 function createUser(user, callback) {
-	chai.request(server)
+	request
 		.post('/users')
 		.set('content-type', 'application/x-www-form-urlencoded')
 		.send(user)
-		.end((error, response) => {
+		.expect('Content-Type', /json/)
+		.expect(200)
+		.end(function(error, response) {
 			should.not.exist(error);
 			should.exist(response);
-			response.should.have.status(200);
-			response.should.be.json;
-			response.body.should.have.property('message');
-			response.body.message.should.equal('successfully registered')
+			response.body.should.have.property('status').equal(200);
+			response.body.should.have.property('message').equal('successfully registered')
 			callback();	
 	});
 };
 
 function createUserWithErrorMessage(user, message, callback) {
-	chai.request(server)
+	request
 		.post('/users')
 		.set('content-type', 'application/x-www-form-urlencoded')
 		.send(user)
-		.end((error, response) => {
-			should.exist(error);
+		.expect('Content-Type', /json/)
+		.expect(400)
+		.end(function(error, response) {
+			should.not.exist(error);
 			should.exist(response);
-			error.should.have.status(400);
-			response.should.have.status(400);
-			response.should.be.json;
+			response.body.should.have.property('status').equal(400);
 			response.body.should.have.property('message').equal(message);
 			callback();
 	});
@@ -55,70 +68,105 @@ function getCookie(response) {
 	return response.headers['set-cookie'].map(function(r) {
 		return r.replace("; path=/; httponly","") 
     }).join("; ");
-}
+};
 
 function loginUserWithCredentials(credentials, cookie, callback) {
-	chai.request(server)
+	request
 		.post('/login')
 		.set('Cookie', cookie)
 		.set('content-type', 'application/x-www-form-urlencoded')
 		.send(credentials)
-		.end((error, response) => {
+		.expect('Content-Type', /json/)
+		.expect(200)
+		.end(function(error, response) {
 			should.not.exist(error);
 			should.exist(response);
-			response.should.have.status(200);
-			response.should.be.json;
+			response.body.should.have.property('status').equal(200);
 			response.body.should.have.property('message').equal('success');
 			callback(getCookie(response));
 	});
-}
+};
 
 function loginUserWithCredentialsAndErrorMessage(credentials, message, cookie, callback) {
-	chai.request(server)
+	request
 		.post('/login')
 		.set('Cookie', cookie)
 		.set('content-type', 'application/x-www-form-urlencoded')
 		.send(credentials)
-		.end((error, response) => {
-			should.exist(error);
+		.expect('Content-Type', /json/)
+		.expect(401)
+		.end(function(error, response) {
+			should.not.exist(error);
 			should.exist(response);
-			error.should.have.status(401);
-			response.should.have.status(401);
-			response.should.be.json;
+			response.body.should.have.property('status').equal(401);
 			response.body.should.have.property('message').equal(message);
 			callback();
 	});
 };
 
 function logoutUser(cookie, callback) {
-	chai.request(server)
+	request
 		.get('/logout')
 		.set('Cookie', cookie)
-		.end((error, response) => {
+		.expect('Content-Type', /json/)
+		.expect(200)
+		.end(function(error, response) {
 			should.not.exist(error);
 			should.exist(response);
-			response.should.have.status(200);
-			response.should.be.json;
-			response.body.should.have.property('message').equal("successfully logged out");
+			response.body.should.have.property('status').equal(200);
+			response.body.should.have.property('message').equal('successfully logged out');
 			callback();
 	});
 };
 
 function logoutUserWithError(cookie, callback) {
-	chai.request(server)
+	request
 		.get('/logout')
 		.set('Cookie', cookie)
-		.end((error, response) => {
-			should.exist(error);
+		.expect('Content-Type', /json/)
+		.expect(403)
+		.end(function(error, response) {
+			should.not.exist(error);
 			should.exist(response);
-			error.should.have.status(403);
-			response.should.have.status(403);
-			response.should.be.json;
+			response.body.should.have.property('status').equal(403);
 			response.body.should.have.property('message').equal('Unauthorized');
 			callback();
 	});
 };
 
+function deleteAllPostsForUser(user, callback) {
+	manager.deleteAllPostsForUser(user, function(error, result) {
+		should.not.exist(error);
+		should.exist(result);
+		callback();
+	});
+};
+
+function createImagePost(json, imagePath, cookie, callback) {
+	request
+		.post('/post')
+		.set('Cookie', cookie)
+        .field('title', json.title)
+        .field('description', json.description)
+        .field('ratio', json.ratio)
+        .field('location', json.location)
+        .field('lat', json.lat)
+        .field('lng', json.lng)
+        .field('date', json.date)
+        .attach('image', imagePath)
+		.expect('Content-Type', /json/)
+		.expect(200)
+		.end(function(error, response) {
+			should.not.exist(error);
+			should.exist(response);
+			response.body.should.have.property('status').equal(200);
+			response.body.should.have.property('message').equal('New post successfully created');
+			callback();
+	});
+};
+
+module.exports.createImagePost = createImagePost;
+module.exports.deleteAllPostsForUser = deleteAllPostsForUser;
 module.exports.loginUserWithCredentialsAndErrorMessage = loginUserWithCredentialsAndErrorMessage;
 module.exports.loginUserWithCredentials = loginUserWithCredentials;
 module.exports.createUserWithErrorMessage = createUserWithErrorMessage;
@@ -126,3 +174,4 @@ module.exports.checkNumberOfUsers = checkNumberOfUsers;
 module.exports.createUser = createUser;
 module.exports.logoutUser = logoutUser;
 module.exports.logoutUserWithError = logoutUserWithError;
+module.exports.deleteUsersByEmails = deleteUsersByEmails;

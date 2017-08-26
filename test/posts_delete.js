@@ -2,15 +2,10 @@
 'use strict';
 
 const chai      = require('chai');
-const chaiHttp  = require('chai-http');
 const server    = require('../app/index');
-const manager	= require('../app/postgreManager');
 const utils 	= require('./utils');
 const seed 		= require('./seed');
-
-let should = chai.should();
-
-chai.use(chaiHttp);
+const should 	= chai.should();
 
 describe('DELETE Posts', () => {
 
