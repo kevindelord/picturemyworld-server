@@ -51,9 +51,16 @@ function createUserWithErrorMessage(user, message, callback) {
 	});
 };
 
-function loginUserWithCredentials(credentials, callback) {
+function getCookie(response) {
+	return response.headers['set-cookie'].map(function(r) {
+		return r.replace("; path=/; httponly","") 
+    }).join("; ");
+}
+
+function loginUserWithCredentials(credentials, cookie, callback) {
 	chai.request(server)
 		.post('/login')
+		.set('Cookie', cookie)
 		.set('content-type', 'application/x-www-form-urlencoded')
 		.send(credentials)
 		.end((error, response) => {
@@ -62,13 +69,14 @@ function loginUserWithCredentials(credentials, callback) {
 			response.should.have.status(200);
 			response.should.be.json;
 			response.body.should.have.property('message').equal('success');
-			callback();
+			callback(getCookie(response));
 	});
 }
 
-function loginUserWithCredentialsAndErrorMessage(credentials, message, callback) {
+function loginUserWithCredentialsAndErrorMessage(credentials, message, cookie, callback) {
 	chai.request(server)
 		.post('/login')
+		.set('Cookie', cookie)
 		.set('content-type', 'application/x-www-form-urlencoded')
 		.send(credentials)
 		.end((error, response) => {
@@ -82,9 +90,10 @@ function loginUserWithCredentialsAndErrorMessage(credentials, message, callback)
 	});
 };
 
-function logoutUser(callback) {
+function logoutUser(cookie, callback) {
 	chai.request(server)
 		.get('/logout')
+		.set('Cookie', cookie)
 		.end((error, response) => {
 			should.not.exist(error);
 			should.exist(response);

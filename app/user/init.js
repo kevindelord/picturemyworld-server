@@ -6,7 +6,7 @@ const passport = require('passport');
 function loginUser(request, response) {
 	if (request.isAuthenticated()) {
 		// Check if the user is not already logged in.
-		return response.status(403).json({"status": 403, "message": "Already logged in"});
+		return response.status(401).json({"status": 401, "message": "Already logged in"});
 	}
 
 	passport.authenticate('local', function(error, user) {
@@ -36,7 +36,7 @@ function logout(request, response) {
 
 function initUser(app) {
 	app.post('/login', loginUser);
-	app.get('/logout', logout);
+	app.get('/logout', passport.activeSessionRequired(), logout);
 }
 
 module.exports = initUser;
