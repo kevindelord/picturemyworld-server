@@ -28,7 +28,7 @@ describe('CREATE Posts', () => {
 			utils.deleteAllPostsForUser(seed.second_user, function() {
 				// Login with first seed user account.
 				let credentials = { username: seed.first_user.email, password: seed.first_user.password };
-				utils.loginUserWithCredentials(credentials, _cookie, function(cookie) {
+				utils.loginUserWithCredentials(credentials, null, function(cookie) {
 					_cookie = cookie
 					done();
 				});
@@ -36,16 +36,36 @@ describe('CREATE Posts', () => {
 		});
 	});
 
-	describe('POST /posts - single post', () => {
-		it('should create a new image post with logged in user', (done) => {
+	describe('POST /posts - simple post', () => {
+		it('should create a new valid image post with logged in user', (done) => {
 			utils.createImagePost(seed.posts.default, seed.posts.images.default, _cookie, done);
+		});
+
+		it('should create the same post two times', (done) => {
+			utils.createImagePost(seed.posts.default, seed.posts.images.default, _cookie, function() {
+				utils.createImagePost(seed.posts.default, seed.posts.images.default, _cookie, done);
+			});
 		});
 	});
 
-	// Happy path
-	// - Create the same post multiple times
-	// - Create different posts
-	// - Logout/login and create post with different user account
+	describe('POST /posts - multiple posts', () => {
+		it('should create two diffent posts', (done) => {
+			utils.createImagePost(seed.posts.default, seed.posts.images.default, _cookie, function() {
+				utils.createImagePost(seed.posts.second, seed.posts.images.second, _cookie, done);
+			});
+		});
+	});
+
+	describe('POST /posts - different accounts', () => {
+		it('should logout and login with another account and create a new post', (done) => {
+			utils.logoutUser(_cookie, function() {
+				let credentials = { username: seed.second_user.email, password: seed.second_user.password };
+				utils.loginUserWithCredentials(credentials, null, function(cookie) {
+					utils.createImagePost(seed.posts.second, seed.posts.images.second, cookie, done);	
+				});
+			});
+		});
+	});
 
 	// Error Cases
 	// - no create when logged out

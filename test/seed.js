@@ -54,8 +54,18 @@ let seed = {
 			lng: '-42.45678',
 			date: '2017-03-04'
 		},
+		second: {
+			title: 'Ocean Image',
+			description: 'that is a pier',
+			ratio: '0.75',
+			location: 'Lobitos',
+			lat: '12.324567',
+			lng: '-4.45678',
+			date: '2017-09-12'
+		},
 		images: {
 			default: 'scripts/images/ruins.jpg',
+			second: 'scripts/images/ocean.jpg'
 		}
 	}
 };
