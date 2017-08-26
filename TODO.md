@@ -8,6 +8,8 @@
 - [x] Use semi-columns everywhere.
 - [ ] Script to generate config file.
 - [ ] Check if server instance is not already running.
+- [ ] Integrate a JavaScript linter.
+- [ ] Force restrictive environment?
 
 ### User connections
 - [x] Properly register users with passwords and sessions.
