@@ -20,6 +20,7 @@ if args.install:
 # Then delete and/or create the database.
 if args.delete:
 	os.system(setenv + "npm run deleteDB")
+	os.system(setenv + "rm -rf user_uploads")
 
 if args.create:
 	os.system(setenv + "npm run createDB")
