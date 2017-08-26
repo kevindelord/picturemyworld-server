@@ -27,7 +27,7 @@ const multerUploaded = multer({
 function getPosts(request, response) {
 	manager.getPosts(function (error, result) {
 		if (error) {
-			return response.status(500).json({"status": 500, "message": `ERROR: ${error}`});
+			return response.status(500).json({"status": 500, "message": `ERROR ${error.code}: ${error}`});
 		} else {
 			return response.json(result);
 		}
@@ -38,7 +38,7 @@ function createPost(request, response) {
 	const user_identifier = request.session.passport['user'];
 	multerUploaded(request, response, function (error) {
 		if (error) {
-			return response.status(400).json({"status": 400, "message": `${error}`, "code": `${error["code"]}`});
+			return response.status(400).json({"status": 400, "message": `ERROR ${error.code}: ${error}`, "code": `${error.code}`});
 		}
 		const post = request.body;	// request.body will hold the text fields.
 		const image = request.file; // request.file is the `image` file.
@@ -48,7 +48,7 @@ function createPost(request, response) {
 
 		manager.createImagePost(post, image, user_identifier, function (error, result) {
 			if (error) {
-				return response.status(500).json({"status": 500, "message": `${error}`, "code": `${error["code"]}`});
+				return response.status(500).json({"status": 500, "message": `ERROR ${error.code}: ${error}`, "code": `${error.code}`});
 			} else {
 				return response.status(200).json({"status": 200, "message": "New post successfully created"});
 			}
