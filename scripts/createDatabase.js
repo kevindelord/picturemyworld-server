@@ -12,9 +12,9 @@ query.addUUIDExtension = 'CREATE EXTENSION "uuid-ossp";';
 query.createUsersTable = "CREATE TABLE users\
 	(\
 		id 			UUID PRIMARY KEY DEFAULT uuid_generate_v1mc(),\
-		email 		TEXT UNIQUE NOT NULL,\
-		username 	TEXT NOT NULL,\
-		password 	TEXT NOT NULL,\
+		email 		TEXT UNIQUE NOT NULL CHECK (email <> ''),\
+		username 	TEXT NOT NULL CHECK (username <> ''),\
+		password 	TEXT NOT NULL CHECK (password <> ''),\
 		created_at	TIMESTAMP DEFAULT current_timestamp,\
 		updated_at	TIMESTAMP DEFAULT current_timestamp\
 	);";
@@ -22,9 +22,9 @@ query.createUsersTable = "CREATE TABLE users\
 query.createPostsTable = "CREATE TABLE posts\
 	(\
 		id 			UUID PRIMARY KEY DEFAULT uuid_generate_v1mc(),\
-		title 		TEXT NOT NULL,\
-		description	TEXT NOT NULL,\
-		location 	TEXT NOT NULL,\
+		title 		TEXT NOT NULL CHECK (title <> ''),\
+		description	TEXT NOT NULL CHECK (description <> ''),\
+		location 	TEXT NOT NULL CHECK (location <> ''),\
 		lat 		DOUBLE PRECISION NOT NULL,\
 		lng 		DOUBLE PRECISION NOT NULL,\
 		date 		DATE NOT NULL,\
