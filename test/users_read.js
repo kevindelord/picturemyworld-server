@@ -61,7 +61,7 @@ describe('READ Users', () => {
 						user.created_at.should.should.be.string;
 						user.updated_at.should.should.be.string;
 						// check date format with a regex
-						let regex = /\d{4}-[01]\d{1}-[0-3]\d{1}T[0-2]\d{1}:[0-5]\d{1}:[0-5]\d{1}\.\d{3}Z/
+						let regex = /\d{4}-[01]\d{1}-[0-3]\d{1}T[0-2]\d{1}:[0-5]\d{1}:[0-5]\d{1}\.\d{3}Z/;
 						user.created_at.should.match(regex);
 						user.updated_at.should.match(regex);
 

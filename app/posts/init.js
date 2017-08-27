@@ -34,15 +34,58 @@ function getPosts(request, response) {
 	});
 }
 
+function verifyDateFormat(date) {
+	let regex = /\d{4}-[01]\d{1}-[0-3]\d{1}T[0-2]\d{1}:[0-5]\d{1}:[0-5]\d{1}\.\d{3}Z/;
+	let result = date.match(regex);
+	return (result != null);
+};
+
+function verifyLngFormat(lng) {
+	// -- Longitude: max/min +180 to -180
+	let regex = /^[-]*[01]*[0-9]*[0-9].[0-9]{7}$/;
+	let result = lng.match(regex);
+	return (result != null);
+};
+
+function verifyLatFormat(lat) {
+	// -- Latitude: max/min +90 to -90
+	let regex = /^[-]*[0-9]*[0-9].[0-9]{7}$/;
+	let result = lat.match(regex);
+	return (result != null);
+};
+
+function verifyRatio(ratio) {
+	// -- Ratio: max/min +10 to 0.2
+	let regex = /^[01]*[0-9][.]*\d*/;
+	let result = ratio.match(regex);
+	return (result != null);
+};
+
 function verifyParameters(post) {
 	// All required field and values to create a new image post.
-	const attributes = ["title", "description", "ratio", "location", "lat", "lng", "date"];
+	const attributes = [
+		{ key: "title", fct: null },
+		{ key: "description", fct: null },
+		{ key: "ratio", fct: verifyRatio },
+		{ key: "location", fct: null },
+		{ key: "lat", fct: verifyLatFormat },
+		{ key: "lng", fct: verifyLngFormat },
+		{ key: "date", fct: verifyDateFormat }
+	];
+
 	var invalidParameter = null;
 
 	attributes.every(function(attribute, index) {
-		if (!post[attribute] || !post[attribute].length) {
-			invalidParameter = attribute;
+		if (!post[attribute.key] || !post[attribute.key].length) {
+			invalidParameter = attribute.key;
 			return false;
+		}
+
+		if (attribute.fct) {
+			if (attribute.fct(post[attribute.key]) == false) {
+				invalidParameter = attribute.key;
+				return false;
+			}
 		}
 
 		return true

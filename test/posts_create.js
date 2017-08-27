@@ -66,6 +66,12 @@ describe('CREATE Posts', () => {
 				});
 			});
 		});
+
+		it('should not create a post while logged out', (done) => {
+			utils.logoutUser(_cookie, function() {
+				utils.createImagePostWithError(seed.posts.first, seed.images.first, _cookie, 403, "Unauthorized", done);
+			});
+		});
 	});
 
 	describe('POST /posts - invalid image post', () => {
@@ -111,12 +117,83 @@ describe('CREATE Posts', () => {
 		};
 	});
 
+
+	describe('POST /posts - invalid parameters', () => {
+		let data = [
+			{ key: "title", value: "" },
+			{ key: "description", value: "" },
+			// -- Ratio: max/min +10 to 0.2
+			{ key: "ratio", value: "this is not a valid ratio" },
+			{ key: "ratio", value: "-2.33" },
+			// { key: "ratio", value: "0" },
+			// { key: "ratio", value: "10" },
+			// -- Location: should be a text
+			{ key: "location", value: "" },
+			// -- Latitude: max/min +90 to -90
+			{ key: "lat", value: "this is not a valid lat" },
+			{ key: "lat", value: "-100.779" },
+			{ key: "lat", value: "1234.789" },
+			{ key: "lat", value: "90.5" },
+			{ key: "lat", value: "-90.5" },
+			{ key: "lat", value: "40.12345" },
+			{ key: "lat", value: "-40.12345678" },
+			// -- Longitude: max/min +180 to -180
+			{ key: "lng", value: "this is not a valid lng" },
+			{ key: "lng", value: "180.5" },
+			{ key: "lng", value: "-180.5" },
+			{ key: "lng", value: "100.57865" },
+			{ key: "lng", value: "-200.779" },
+			{ key: "lng", value: "1234.789" },
+			{ key: "lng", value: "34.1234567890" },
+			// -- Date format
+			{ key: "date", value: "this is not a date string" },
+			// let regex = /\d{4}-[01]\d{1}-[0-3]\d{1}T[0-2]\d{1}:[0-5]\d{1}:[0-5]\d{1}\.\d{3}Z/;
+			{ key: "date", value: "2016-15-12 12:34:00.123Z" },
+			{ key: "date", value: "2016-05-12" },
+			{ key: "date", value: "2016-05-12T12:34:00" }
+		]
+
+		for (let pair of data) {
+			it(`should fail to create a post with invalid ${pair.key} parameter with value: ${pair.value}`, (done) => {
+				var invalid_json = JSON.parse(JSON.stringify(seed.posts.first))
+				invalid_json[pair.key] = pair.value
+				utils.createImagePostWithError(invalid_json, seed.images.first, _cookie, 400, `Invalid or missing '${pair.key}' parameter`, done);
+			});
+		};
+	});
+
+	describe('POST /posts - valid parameters', () => {
+		let data = [
+			// -- Ratio: max/min +10 to 0.2
+			{ key: "ratio", value: "2.33" },
+			{ key: "ratio", value: "0.3486" },
+			{ key: "ratio", value: "2.3567893" },
+			{ key: "ratio", value: "8" },
+			{ key: "ratio", value: "2" },
+			// -- Location: should be a text
+			// { key: "location", value: "Eiffel Tower, Paris" },
+			// -- Latitude: max/min +90 to -90
+			{ key: "lat", value: "34.7895553" },
+			// -- Longitude: max/min +180 to -180
+			{ key: "lng", value: "-100.1234567" },
+			// -- Date format
+			// let regex = /\d{4}-[01]\d{1}-[0-3]\d{1}T[0-2]\d{1}:[0-5]\d{1}:[0-5]\d{1}\.\d{3}Z/;
+			{ key: "date", value: "2016-03-12T12:34:00.123Z" }
+		]
+
+		for (let pair of data) {
+			it(`should create a post with valid ${pair.key} parameter with value: ${pair.value}`, (done) => {
+				var invalid_json = JSON.parse(JSON.stringify(seed.posts.first))
+				invalid_json[pair.key] = pair.value
+				utils.createImagePost(invalid_json, seed.images.first, _cookie, done);
+			});
+		};
+	});
+
 	// Error Cases
 	// - Send a image too big
-	// - Create post not logged in
+	// - Should parameters be strong typed?
 
-	// Regex check
-	// - Check invalid date format
-	// - Check invalid lat & lng
-	// - Check invalid ratio
+	// Regex
+	// - Check number value for: ratio, lat, lng
 });
