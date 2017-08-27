@@ -52,6 +52,6 @@ describe('LOGIN Users', () => {
 			it(`should not log user in with ${user.reason} and return an error`, (done) => {
 				utils.loginUserWithErrorMessage(user.credentials, "Invalid credentials", null, done);
 			});
-		};		
+		};
 	});
 });

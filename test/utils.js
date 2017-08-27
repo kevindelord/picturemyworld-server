@@ -78,7 +78,7 @@ function _createUser(user, code, message, callback) {
 
 function getCookie(response) {
 	return response.headers['set-cookie'].map(function(r) {
-		return r.replace("; path=/; httponly","") 
+		return r.replace("; path=/; httponly","")
     }).join("; ");
 };
 
@@ -141,20 +141,22 @@ function _logout(cookie, code, message, callback) {
 // Image Post
 
 function createImagePost(json, imagePath, cookie, callback) {
-	createImagePostWithError(json, imagePath, cookie, 200, 'New post successfully created', callback);
+	_createImagePost(json, imagePath, cookie, 200, 'New post successfully created', callback);
 };
 
 function createImagePostWithError(json, imagePath, cookie, errorCode, errorMessage, callback) {
-	request
-		.post('/post')
-		.set('Cookie', cookie)
-		.field('title', json.title)
-		.field('description', json.description)
-		.field('ratio', json.ratio)
-		.field('location', json.location)
-		.field('lat', json.lat)
-		.field('lng', json.lng)
-		.field('date', json.date)
+	_createImagePost(json, imagePath, cookie, errorCode, errorMessage, callback);
+};
+
+function _createImagePost(json, imagePath, cookie, errorCode, errorMessage, callback) {
+	var req = request.post('/post').set('Cookie', cookie)
+	for (var key in json) {
+		if (json.hasOwnProperty(key) && json[key]) {
+			req.field(key, json[key]);
+		}
+	};
+
+	req
 		.attach('image', imagePath)
 		.expect('Content-Type', /json/)
 		.expect(errorCode)

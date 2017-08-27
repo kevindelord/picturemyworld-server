@@ -45,7 +45,7 @@ let seed = {
 		password: 'superpass'
 	},
 	posts: {
-		default: {
+		first: {
 			title: 'image_title',
 			description: 'ruins of chan chan',
 			ratio: '1.333',
@@ -62,12 +62,12 @@ let seed = {
 			lat: '12.324567',
 			lng: '-4.45678',
 			date: '2017-09-12'
-		},
-		images: {
-			default: 'scripts/images/ruins.jpg',
-			second: 'scripts/images/ocean.jpg',
-			invalid: 'README.md'
 		}
+	},
+	images: {
+		first: 'scripts/images/ruins.jpg',
+		second: 'scripts/images/ocean.jpg',
+		invalid: 'README.md'
 	}
 };
 

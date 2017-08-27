@@ -34,21 +34,44 @@ function getPosts(request, response) {
 	});
 }
 
+function verifyParameters(post) {
+	// All required field and values to create a new image post.
+	const attributes = ["title", "description", "ratio", "location", "lat", "lng", "date"];
+	var invalidParameter = null;
+
+	attributes.every(function(attribute, index) {
+		if (!post[attribute] || !post[attribute].length) {
+			invalidParameter = attribute;
+			return false;
+		}
+
+		return true
+	});
+
+	return invalidParameter;
+};
+
 function createPost(request, response) {
 	const user_identifier = request.session.passport['user'];
 	multerUploaded(request, response, function (error) {
 		if (error) {
-			return response.status(400).json({"status": 400, "message": `ERROR ${error.code}: ${error}`, "code": `${error.code}`});
+			return response.status(400).json({"status": 400, "message": `ERROR ${error.code}: ${error}`});
 		}
-		const post = request.body;	// request.body will hold the text fields.
+
 		const image = request.file; // request.file is the `image` file.
 		if (!image) {
-			return response.status(400).json({"status": 400, "message": "Missing image object", "code": "undefined"});
+			return response.status(400).json({"status": 400, "message": "Missing image object"});
+		}
+
+		const post = request.body;	// request.body will hold the text fields.
+		const invalidParameter = verifyParameters(post)
+		if (invalidParameter) {
+			return response.status(400).json({"status": 400, "message": `Invalid or missing '${invalidParameter}' parameter`});
 		}
 
 		manager.createImagePost(post, image, user_identifier, function (error, result) {
 			if (error) {
-				return response.status(500).json({"status": 500, "message": `ERROR ${error.code}: ${error}`, "code": `${error.code}`});
+				return response.status(500).json({"status": 500, "message": `ERROR ${error.code}: ${error}`});
 			} else {
 				return response.status(200).json({"status": 200, "message": "New post successfully created"});
 			}
