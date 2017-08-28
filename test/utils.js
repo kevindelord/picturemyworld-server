@@ -169,6 +169,21 @@ function _createImagePost(json, imagePath, cookie, errorCode, errorMessage, call
 	});
 };
 
+function getAllImagePosts(expectedNumber, cookie, callback) {
+	request
+		.get('/posts')
+		.set('Cookie', cookie)
+		.expect('Content-Type', /json/)
+		.expect(200)
+		.end(function(error, response) {
+			should.not.exist(error);
+			should.exist(response);
+			response.body.should.not.have.property('status');
+			response.body.should.be.a('array').and.have.lengthOf(expectedNumber);
+			callback(response.body);
+	});
+};
+
 //
 // Module exports
 //
@@ -184,3 +199,4 @@ module.exports.logoutUser = logoutUser;
 module.exports.logoutUserWithError = logoutUserWithError;
 module.exports.deleteUsersByEmails = deleteUsersByEmails;
 module.exports.createImagePostWithError = createImagePostWithError;
+module.exports.getAllImagePosts = getAllImagePosts;

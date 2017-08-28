@@ -7,6 +7,7 @@ const multer  	= require('multer');
 const path 		= require('path');
 const config 	= require('config');
 const fs 		= require('fs');
+const validator = require('validator');
 
 const multerUploaded = multer({
 	dest: config.get("express.upload.destinationFolder"),
@@ -34,31 +35,56 @@ function getPosts(request, response) {
 	});
 }
 
+function minmax(min, max, value) {
+	let number = parseFloat(value);
+	return (number >= min && number <= max);
+};
+
 function verifyDateFormat(date) {
+	// Use validator in the first place.
+	if (validator.isISO8601(date) == false) {
+		return false;
+	}
+
+	// And double check the exact format manually.
 	let regex = /\d{4}-[01]\d{1}-[0-3]\d{1}T[0-2]\d{1}:[0-5]\d{1}:[0-5]\d{1}\.\d{3}Z/;
 	let result = date.match(regex);
 	return (result != null);
 };
 
 function verifyLngFormat(lng) {
-	// -- Longitude: max/min +180 to -180
+	// -- Longitude: min/max from -180 to +180.
 	let regex = /^[-]*[01]*[0-9]*[0-9].[0-9]{7}$/;
 	let result = lng.match(regex);
-	return (result != null);
+	if (result != null) {
+		return minmax(-180, 180, lng);
+	}
+
+	return false;
 };
 
 function verifyLatFormat(lat) {
-	// -- Latitude: max/min +90 to -90
+	// -- Latitude: min/max from -90 to +90.
 	let regex = /^[-]*[0-9]*[0-9].[0-9]{7}$/;
 	let result = lat.match(regex);
-	return (result != null);
+	if (result != null) {
+		return minmax(-90, 90, lat);
+	}
+
+	return false;
 };
 
 function verifyRatio(ratio) {
-	// -- Ratio: max/min +10 to 0.2
+	// TODO: set this values in the config file.
+	// -- Ratio: min/max from +0.2 to +10.
 	let regex = /^[01]*[0-9][.]*\d*/;
 	let result = ratio.match(regex);
-	return (result != null);
+	if (result != null) {
+		// If valid check limits
+		return minmax(0.2, 10, ratio);
+	}
+
+	return false;
 };
 
 function verifyParameters(post) {
@@ -106,7 +132,7 @@ function createPost(request, response) {
 			return response.status(400).json({"status": 400, "message": "Missing image object"});
 		}
 
-		const post = request.body;	// request.body will hold the text fields.
+		const post = request.body; // request.body will hold the text fields.
 		const invalidParameter = verifyParameters(post)
 		if (invalidParameter) {
 			return response.status(400).json({"status": 400, "message": `Invalid or missing '${invalidParameter}' parameter`});
@@ -132,7 +158,7 @@ function initUploadFolder() {
 function initPosts (app) {
 	initUploadFolder();
 
-	app.get('/posts', passport.activeSessionRequired(), getPosts);
+	app.get('/posts', getPosts);
 	app.post('/post', passport.activeSessionRequired(), createPost);
 }
 

@@ -124,27 +124,27 @@ describe('CREATE Posts', () => {
 			{ key: "description", value: "" },
 			// -- Ratio: max/min +10 to 0.2
 			{ key: "ratio", value: "this is not a valid ratio" },
-			{ key: "ratio", value: "-2.33" },
-			// { key: "ratio", value: "0" },
-			// { key: "ratio", value: "10" },
+			{ key: "ratio", value: -2.33 },
+			{ key: "ratio", value: 0 },
+			{ key: "ratio", value: 11 },
 			// -- Location: should be a text
 			{ key: "location", value: "" },
 			// -- Latitude: max/min +90 to -90
 			{ key: "lat", value: "this is not a valid lat" },
-			{ key: "lat", value: "-100.779" },
-			{ key: "lat", value: "1234.789" },
-			{ key: "lat", value: "90.5" },
-			{ key: "lat", value: "-90.5" },
-			{ key: "lat", value: "40.12345" },
-			{ key: "lat", value: "-40.12345678" },
+			{ key: "lat", value: -100.779 },
+			{ key: "lat", value: 1234.789 },
+			{ key: "lat", value: 90.5 },
+			{ key: "lat", value: -90.5 },
+			{ key: "lat", value: 40.12345 },
+			{ key: "lat", value: -40.12345678 },
 			// -- Longitude: max/min +180 to -180
 			{ key: "lng", value: "this is not a valid lng" },
-			{ key: "lng", value: "180.5" },
-			{ key: "lng", value: "-180.5" },
-			{ key: "lng", value: "100.57865" },
-			{ key: "lng", value: "-200.779" },
-			{ key: "lng", value: "1234.789" },
-			{ key: "lng", value: "34.1234567890" },
+			{ key: "lng", value: 180.5 },
+			{ key: "lng", value: -180.5 },
+			{ key: "lng", value: 100.57865 },
+			{ key: "lng", value: -200.779 },
+			{ key: "lng", value: 1234.789 },
+			{ key: "lng", value: 34.1234567890 },
 			// -- Date format
 			{ key: "date", value: "this is not a date string" },
 			// let regex = /\d{4}-[01]\d{1}-[0-3]\d{1}T[0-2]\d{1}:[0-5]\d{1}:[0-5]\d{1}\.\d{3}Z/;
@@ -165,17 +165,15 @@ describe('CREATE Posts', () => {
 	describe('POST /posts - valid parameters', () => {
 		let data = [
 			// -- Ratio: max/min +10 to 0.2
-			{ key: "ratio", value: "2.33" },
-			{ key: "ratio", value: "0.3486" },
-			{ key: "ratio", value: "2.3567893" },
-			{ key: "ratio", value: "8" },
-			{ key: "ratio", value: "2" },
-			// -- Location: should be a text
-			// { key: "location", value: "Eiffel Tower, Paris" },
+			{ key: "ratio", value: 2.33 },
+			{ key: "ratio", value: 0.3486 },
+			{ key: "ratio", value: 2.3567893 },
+			{ key: "ratio", value: 8 },
+			{ key: "ratio", value: 2 },
 			// -- Latitude: max/min +90 to -90
-			{ key: "lat", value: "34.7895553" },
+			{ key: "lat", value: 34.7895553 },
 			// -- Longitude: max/min +180 to -180
-			{ key: "lng", value: "-100.1234567" },
+			{ key: "lng", value: -100.1234567 },
 			// -- Date format
 			// let regex = /\d{4}-[01]\d{1}-[0-3]\d{1}T[0-2]\d{1}:[0-5]\d{1}:[0-5]\d{1}\.\d{3}Z/;
 			{ key: "date", value: "2016-03-12T12:34:00.123Z" }
@@ -193,7 +191,4 @@ describe('CREATE Posts', () => {
 	// Error Cases
 	// - Send a image too big
 	// - Should parameters be strong typed?
-
-	// Regex
-	// - Check number value for: ratio, lat, lng
 });

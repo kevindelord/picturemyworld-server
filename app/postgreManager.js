@@ -5,7 +5,7 @@ const pg 		= require('pg');
 const config 	= require('config');
 const sanitizer = require('sanitizer');
 
-// Create a new user with a prepared statement. 
+// Create a new user with a prepared statement.
 function createUser(user, callback) {
 	const query = {
 		name: 'create-user',
@@ -102,7 +102,7 @@ function getPosts(callback) {
 	executeQueryWithParameters(query, callback);
 }
 
-// Create a new image post with a prepared statement. 
+// Create a new image post with a prepared statement.
 function createImagePost(post, image, user_identifier, callback) {
 	const query = {
 		name: 'create-image-post',

@@ -48,20 +48,20 @@ let seed = {
 		first: {
 			title: 'image_title',
 			description: 'ruins of chan chan',
-			ratio: '1.333',
+			ratio: 1.333,
 			location: 'Peru',
-			lat: '1.3245612',
-			lng: '-42.4567812',
+			lat: 1.3245612,
+			lng: -42.4567812,
 			date: '2016-05-12T12:34:00.123Z'
 		},
 		second: {
 			title: 'Ocean Image',
 			description: 'that is a pier',
-			ratio: '0.75',
+			ratio: 0.75,
 			location: 'Lobitos',
-			lat: '12.3245678',
-			lng: '-4.4567812',
-			date: '2016-05-12T12:34:00.123Z'
+			lat: 12.3245678,
+			lng: -4.4567812,
+			date: '2017-08-01T22:33:44.000Z'
 		}
 	},
 	images: {

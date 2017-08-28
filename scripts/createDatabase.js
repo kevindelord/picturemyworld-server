@@ -27,8 +27,8 @@ query.createPostsTable = "CREATE TABLE posts\
 		location 	TEXT NOT NULL CHECK (location <> ''),\
 		lat 		DOUBLE PRECISION NOT NULL,\
 		lng 		DOUBLE PRECISION NOT NULL,\
-		date 		DATE NOT NULL,\
-		ratio 		DECIMAL NOT NULL,\
+		date 		TIMESTAMP WITH TIME ZONE NOT NULL,\
+		ratio 		DOUBLE PRECISION NOT NULL,\
 		user_id_fkey UUID NOT NULL,\
 		created_at	TIMESTAMP DEFAULT current_timestamp,\
 		updated_at	TIMESTAMP DEFAULT current_timestamp,\
