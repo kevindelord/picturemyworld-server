@@ -190,5 +190,4 @@ describe('CREATE Posts', () => {
 
 	// Error Cases
 	// - Send a image too big
-	// - Should parameters be strong typed?
 });
