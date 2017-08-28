@@ -9,17 +9,28 @@ const should 	= chai.should();
 
 describe('DELETE Posts', () => {
 
+	before((done) => {
+		// Remove all user accounts
+		utils.deleteUsersByEmails([seed.first_user.email, seed.second_user.email], function() {
+			// #1 create first user and login
+			// #2 create first post and logout
+			// #3 create second user and login
+			// #4 create second post and logout
+			utils.createUserAndPost(seed.first_user, seed.posts.first, seed.images.first, function() {
+				utils.createUserAndPost(seed.second_user, seed.posts.second, seed.images.second, done);
+			});
+		});
+	});
+
 	beforeEach((done) => {
-		// #1 create user and login
-		// #2 create post and retain identifier
 		done();
 	});
 
 	// Happy path
 	// - Create post and delete it with active user
-	
+
 	// Error Cases
-	// - Do not delete a non-existing post 
+	// - Do not delete a non-existing post
 	// - Login with other account, create a post and logout. Login with other account and try to delete post.
 	// - No delete while logged out
 });

@@ -8,6 +8,7 @@ const seed 		= require('./seed');
 const should 	= chai.should();
 const supertest	= require('supertest');
 const request 	= supertest(server);
+const validator	= require('validator');
 
 describe('READ Users', () => {
 
@@ -54,12 +55,26 @@ describe('READ Users', () => {
 						response.body.should.have.property('users');
 						response.body.users.should.be.a('array');
 						response.body.users.should.have.lengthOf(1);
-						let user = response.body.users[0]
-						user.should.have.all.keys('email', 'username', 'created_at', 'updated_at')
-						user.email.should.equal(seed.first_user.email)
-						user.username.should.equal(seed.first_user.username)
-						user.created_at.should.should.be.string;
-						user.updated_at.should.should.be.string;
+						let user = response.body.users[0];
+						// id
+						user.should.have.property('id');
+						user.id.should.be.a('string');
+						validator.isUUID(user.id);
+						// created_at
+						user.should.have.property('created_at');
+						user.created_at.should.be.a('string');
+						validator.isISO8601(user.created_at);
+						// updated_at
+						user.should.have.property('updated_at');
+						user.updated_at.should.be.a('string');
+						validator.isISO8601(user.updated_at);
+						// email
+						user.should.have.property('email');
+						validator.isEmail(user.email);
+						user.email.should.equal(seed.first_user.email);
+						// username
+						user.should.have.property('username');
+						user.username.should.equal(seed.first_user.username);
 						// check date format with a regex
 						let regex = /\d{4}-[01]\d{1}-[0-3]\d{1}T[0-2]\d{1}:[0-5]\d{1}:[0-5]\d{1}\.\d{3}Z/;
 						user.created_at.should.match(regex);

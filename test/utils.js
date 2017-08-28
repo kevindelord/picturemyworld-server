@@ -20,8 +20,8 @@ function deleteUsersByEmails(emails, callback) {
 	});
 };
 
-function deleteAllPostsForUser(user, callback) {
-	manager.deleteAllPostsForUser(user, function(error, result) {
+function deleteAllPostsForUserEmail(email, callback) {
+	manager.deleteAllPostsForUserEmail(email, function(error, result) {
 		should.not.exist(error);
 		should.exist(result);
 		callback();
@@ -73,6 +73,19 @@ function _createUser(user, code, message, callback) {
 			callback();
 	});
 };
+
+function createUserAndPost(user, post, image, callback) {
+	// Create first user account
+	createUser(user, function() {
+		// Login with first user account
+		let credentials = { username: user.email, password: user.password };
+		loginUser(credentials, null, function(cookie) {
+			createImagePost(post, image, cookie, function() {
+				logoutUser(cookie, callback);
+			});
+		});
+	});
+}
 
 // Authentification
 
@@ -184,12 +197,42 @@ function getAllImagePosts(expectedNumber, cookie, callback) {
 	});
 };
 
+function getImagePostForIdentifier(identifier, cookie, callback) {
+	request
+		.get('/post/' + identifier)
+		.set('Cookie', cookie)
+		.expect('Content-Type', /json/)
+		.expect(200)
+		.end(function(error, response) {
+			should.not.exist(error);
+			should.exist(response);
+			response.body.should.not.have.property('status');
+			response.body.should.be.a('array');
+			callback(response.body);
+	});
+};
+
+function getImagePostForIdentifierWithError(identifier, cookie, errorCode, errorMessage, callback) {
+	request
+		.get('/post/' + identifier)
+		.set('Cookie', cookie)
+		.expect('Content-Type', /json/)
+		.expect(errorCode)
+		.end(function(error, response) {
+			should.not.exist(error);
+			should.exist(response);
+			response.body.should.have.property('status').equal(errorCode);
+			response.body.should.have.property('message').equal(errorMessage);
+			callback();
+	});
+};
+
 //
 // Module exports
 //
 
 module.exports.createImagePost = createImagePost;
-module.exports.deleteAllPostsForUser = deleteAllPostsForUser;
+module.exports.deleteAllPostsForUserEmail = deleteAllPostsForUserEmail;
 module.exports.loginUserWithErrorMessage = loginUserWithErrorMessage;
 module.exports.loginUser = loginUser;
 module.exports.createUserWithErrorMessage = createUserWithErrorMessage;
@@ -200,3 +243,6 @@ module.exports.logoutUserWithError = logoutUserWithError;
 module.exports.deleteUsersByEmails = deleteUsersByEmails;
 module.exports.createImagePostWithError = createImagePostWithError;
 module.exports.getAllImagePosts = getAllImagePosts;
+module.exports.createUserAndPost = createUserAndPost;
+module.exports.getImagePostForIdentifier = getImagePostForIdentifier;
+module.exports.getImagePostForIdentifierWithError = getImagePostForIdentifierWithError;

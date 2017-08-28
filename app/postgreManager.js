@@ -9,8 +9,7 @@ const sanitizer = require('sanitizer');
 function createUser(user, callback) {
 	const query = {
 		name: 'create-user',
-		text: 'INSERT INTO users (email, username, password)\
-		VALUES ($1, $2, $3)',
+		text: 'INSERT INTO users (email, username, password) VALUES ($1, $2, $3);',
 		values: [
 			// Sanitize all user inputs.
 			sanitizer.sanitize(user.email),
@@ -19,20 +18,20 @@ function createUser(user, callback) {
 		]
 	};
 	executeQueryWithParameters(query, callback);
-}
+};
 
 // Fetch a user by its email (unique in DB) with a prepared statement.
 function getUserByEmail(email, callback) {
 	const query = {
 		name: 'get-user-by-email',
-		text: 'SELECT id, password FROM users WHERE (email = $1)',
+		text: 'SELECT id, password FROM users WHERE (email = $1);',
 		values: [
 			// Sanitize all user inputs.
 			sanitizer.sanitize(email)
 		]
 	};
 	executeQueryWithParameters(query, callback);
-}
+};
 
 // Delete users by their emails (unique in DB) with a prepared statement.
 function deleteUsersByEmails(emails, callback) {
@@ -43,40 +42,53 @@ function deleteUsersByEmails(emails, callback) {
 
 	const query = {
 		name: 'delete-users-by-emails',
-		text: 'DELETE FROM users WHERE (email = ANY($1::text[]))',
+		text: 'DELETE FROM users WHERE (email = ANY($1::text[]));',
 		values: [
 			emails
+		]
+	};
+	executeQueryWithParameters(query, callback);
+};
+
+// Delete a post by its id (unique in DB) if it is related to the current user with a prepared statement.
+function deletePostForIdentifierAndUser(identifier, user_identifier, callback) {
+	const query = {
+		name: 'delete-post-by-identifier-for-user',
+		text: 'DELETE FROM posts WHERE (user_id_fkey = $1 AND id = $2);',
+		values: [
+			sanitizer.sanitize(user_identifier),
+			sanitizer.sanitize(identifier)
 		]
 	};
 	executeQueryWithParameters(query, callback);
 }
 
 // Delete posts by their ids (unique in DB) with a prepared statement.
-function deletePostsByIds(ids, callback) {
+function deletePostsForIdentifiers(identifiers, callback) {
 	// TODO: test with the GET/READ posts TDD
-	for (var i = 0; i < ids.length; i++) {
+	for (var i = 0; i < identifiers.length; i++) {
 		// Sanitize all user inputs.
-		ids[i] = sanitizer.sanitize(ids[i])
+		identifiers[i] = sanitizer.sanitize(identifiers[i])
 	};
 
 	const query = {
 		name: 'delete-posts-by-ids',
-		text: 'DELETE FROM posts WHERE (id = ANY($1::text[]))',
+		text: 'DELETE FROM posts WHERE (id = ANY($1::text[]));',
 		values: [
-			ids
+			identifiers
 		]
 	};
 	executeQueryWithParameters(query, callback);
-}
+};
 
 // Delete all posts for user with a prepared statement.
-function deleteAllPostsForUser(user, callback) {
+function deleteAllPostsForUserEmail(email, callback) {
 	// TODO: test with the GET/READ posts TDD
 	const query = {
 		name: 'delete-all-posts-for-user',
 		text: 'DELETE FROM posts WHERE (user_id_fkey = (SELECT id FROM users WHERE (email = $1)));',
 		values: [
-			sanitizer.sanitize(user.email)
+			sanitizer.sanitize(email)
 		]
 	};
 	executeQueryWithParameters(query, callback);
@@ -86,7 +98,7 @@ function deleteAllPostsForUser(user, callback) {
 function getUsers(callback) {
 	const query = {
 		name: 'get-users',
-		text: 'SELECT email, username, created_at, updated_at FROM users',
+		text: 'SELECT id, email, username, created_at, updated_at FROM users;',
 		values: []
 	};
 	executeQueryWithParameters(query, callback);
@@ -96,8 +108,20 @@ function getUsers(callback) {
 function getPosts(callback) {
 	const query = {
 		name: 'get-posts',
-		text: 'SELECT title, description, location, lat, lng, date, ratio, created_at, updated_at FROM posts',
+		text: 'SELECT id, title, description, location, lat, lng, date, ratio, created_at, updated_at FROM posts;',
 		values: []
+	};
+	executeQueryWithParameters(query, callback);
+}
+
+// Fetch a post with its id (unique in DB) with a prepared statement.
+function getPostForIdentifier(identifier, callback) {
+	const query = {
+		name: 'get-post-by-identifier',
+		text: 'SELECT id, title, description, location, lat, lng, date, ratio, created_at, updated_at FROM posts WHERE (id = $1);',
+		values: [
+			sanitizer.sanitize(identifier)
+		]
 	};
 	executeQueryWithParameters(query, callback);
 }
@@ -178,5 +202,7 @@ module.exports.getUserByEmail = getUserByEmail;
 module.exports.deleteUsersByEmails = deleteUsersByEmails;
 module.exports.createImagePost = createImagePost;
 module.exports.connectURL = connectURL;
-module.exports.deleteAllPostsForUser = deleteAllPostsForUser;
-module.exports.deletePostsByIds = deletePostsByIds;
+module.exports.deleteAllPostsForUserEmail = deleteAllPostsForUserEmail;
+module.exports.deletePostsForIdentifiers = deletePostsForIdentifiers;
+module.exports.getPostForIdentifier = getPostForIdentifier;
+module.exports.deletePostForIdentifierAndUser = deletePostForIdentifierAndUser;

@@ -14,7 +14,7 @@ const multerUploaded = multer({
 	limits: {
 		fileSize: (config.get("express.upload.fileSizeInMB") * 1000 * 1000)
 	},
-	fileFilter: function (request, file, callback) {
+	fileFilter: function(request, file, callback) {
 		var filetypes = /jpeg|jpg|png/;
 		var mimetype = filetypes.test(file.mimetype);
 		var extname = filetypes.test(path.extname(file.originalname).toLowerCase());
@@ -26,14 +26,14 @@ const multerUploaded = multer({
 }).single('image');
 
 function getPosts(request, response) {
-	manager.getPosts(function (error, result) {
+	manager.getPosts(function(error, result) {
 		if (error) {
 			return response.status(500).json({"status": 500, "message": `ERROR ${error.code}: ${error}`});
 		} else {
 			return response.json(result);
 		}
 	});
-}
+};
 
 function minmax(min, max, value) {
 	let number = parseFloat(value);
@@ -122,7 +122,7 @@ function verifyParameters(post) {
 
 function createPost(request, response) {
 	const user_identifier = request.session.passport['user'];
-	multerUploaded(request, response, function (error) {
+	multerUploaded(request, response, function(error) {
 		if (error) {
 			return response.status(400).json({"status": 400, "message": `ERROR ${error.code}: ${error}`});
 		}
@@ -138,7 +138,7 @@ function createPost(request, response) {
 			return response.status(400).json({"status": 400, "message": `Invalid or missing '${invalidParameter}' parameter`});
 		}
 
-		manager.createImagePost(post, image, user_identifier, function (error, result) {
+		manager.createImagePost(post, image, user_identifier, function(error, result) {
 			if (error) {
 				return response.status(500).json({"status": 500, "message": `ERROR ${error.code}: ${error}`});
 			} else {
@@ -146,20 +146,52 @@ function createPost(request, response) {
 			}
 		});
 	});
-}
+};
 
 function initUploadFolder() {
 	const destination = config.get("express.upload.destinationFolder");
 	if (!fs.existsSync(destination)) {
 		fs.mkdirSync(destination);
 	}
-}
+};
+
+function deletePost(request, response) {
+	const user_identifier = request.session.passport['user'];
+	manager.deletePostByIdForUser(request.params.post_id, user_identifier, function(error, result) {
+		if (error) {
+			return response.status(500).json({"status": 500, "message": `ERROR ${error.code}: ${error}`});
+		} else {
+			return response.status(200).json({"status": 200, "message": "Post successfully deleted"});
+		}
+	});
+};
+
+function getPost(request, response) {
+	const identifier = request.params.post_id
+	console.log(identifier);
+	if (validator.isUUID(identifier) == false) {
+		return response.status(400).json({"status": 400, "message": "Invalid post_id parameter"});
+	}
+
+	manager.getPostForIdentifier(request.params.post_id, function(error, result) {
+		if (error) {
+			console.log(error);
+			return response.status(500).json({"status": 500, "message": `ERROR ${error.code}: ${error}`});
+		} else {
+			return response.json(result);
+		}
+	});
+};
+
+	// return response.json({"id": request.params.post_id});
 
 function initPosts (app) {
 	initUploadFolder();
 
 	app.get('/posts', getPosts);
 	app.post('/post', passport.activeSessionRequired(), createPost);
+	app.get('/post/:post_id', getPost);
+	app.delete('/post/:post_id', passport.activeSessionRequired(), deletePost);
 }
 
 module.exports = initPosts;

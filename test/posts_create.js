@@ -25,8 +25,8 @@ describe('CREATE Posts', () => {
 
 	beforeEach((done) => {
 		// Delete all posts for all seed users
-		utils.deleteAllPostsForUser(seed.first_user, function() {
-			utils.deleteAllPostsForUser(seed.second_user, function() {
+		utils.deleteAllPostsForUserEmail(seed.first_user.email, function() {
+			utils.deleteAllPostsForUserEmail(seed.second_user.email, function() {
 				// Login with first seed user account.
 				let credentials = { username: seed.first_user.email, password: seed.first_user.password };
 				utils.loginUser(credentials, null, function(cookie) {
@@ -175,7 +175,6 @@ describe('CREATE Posts', () => {
 			// -- Longitude: max/min +180 to -180
 			{ key: "lng", value: -100.1234567 },
 			// -- Date format
-			// let regex = /\d{4}-[01]\d{1}-[0-3]\d{1}T[0-2]\d{1}:[0-5]\d{1}:[0-5]\d{1}\.\d{3}Z/;
 			{ key: "date", value: "2016-03-12T12:34:00.123Z" }
 		]
 
