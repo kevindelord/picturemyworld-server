@@ -4,7 +4,6 @@
 const utils 	= require('./utils');
 const seed 		= require('./seed');
 const should 	= require('chai').should();
-const validator	= require('validator');
 
 describe('READ Posts', () => {
 
@@ -32,23 +31,7 @@ describe('READ Posts', () => {
 			utils.getAllPosts(2, null, function(posts) {
 				let seedPosts = [seed.posts.first, seed.posts.second];
 				posts.forEach(function(post, index) {
-					// id
-					post.should.have.property('id');
-					post.id.should.be.a('string');
-					validator.isUUID(post.id);
-					// created_at
-					post.should.have.property('created_at');
-					post.created_at.should.be.a('string');
-					validator.isISO8601(post.created_at);
-					// updated_at
-					post.should.have.property('updated_at');
-					post.updated_at.should.be.a('string');
-					validator.isISO8601(post.updated_at);
-					delete post.id;
-					delete post.updated_at;
-					delete post.created_at;
-					// All other attributes
-					post.should.eql(seedPosts[index]);
+					utils.postsShouldBeValidAndEqual(post, seedPosts[index], null);
 				});
 				done();
 			});

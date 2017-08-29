@@ -298,6 +298,30 @@ function getPostForIdentifierWithError(identifier, cookie, errorCode, errorMessa
 	});
 };
 
+function postsShouldBeValidAndEqual(post, seed_post, callback) {
+	// id
+	post.should.have.property('id');
+	post.id.should.be.a('string');
+	validator.isUUID(post.id);
+	// created_at
+	post.should.have.property('created_at');
+	post.created_at.should.be.a('string');
+	validator.isISO8601(post.created_at);
+	// updated_at
+	post.should.have.property('updated_at');
+	post.updated_at.should.be.a('string');
+	validator.isISO8601(post.updated_at);
+	delete post.id;
+	delete post.updated_at;
+	delete post.created_at;
+	// All other attributes
+	post.should.eql(seed_post);
+
+	if (callback) {
+		callback();
+	}
+};
+
 //
 // Module exports
 //
@@ -320,3 +344,4 @@ module.exports.getPostForIdentifierWithError = getPostForIdentifierWithError;
 module.exports.getUserForIdentifier = getUserForIdentifier;
 module.exports.getCurrentUser = getCurrentUser;
 module.exports.usersShouldBeValidAndEqual = usersShouldBeValidAndEqual;
+module.exports.postsShouldBeValidAndEqual = postsShouldBeValidAndEqual;
