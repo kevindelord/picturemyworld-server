@@ -9,6 +9,11 @@ const config 	= require('config');
 const fs 		= require('fs');
 const validator = require('validator');
 
+function _uncatchError(error, response) {
+	console.log(error);
+	return response.status(500).json({"status": 500, "message": `ERROR ${error.code}: ${error}`}); // Unkown error
+};
+
 const multerUploaded = multer({
 	dest: config.get("express.upload.destinationFolder"),
 	limits: {
@@ -28,7 +33,7 @@ const multerUploaded = multer({
 function getPosts(request, response) {
 	manager.getPosts(function(error, result) {
 		if (error) {
-			return response.status(500).json({"status": 500, "message": `ERROR ${error.code}: ${error}`});
+			return _uncatchError(error, response);
 		} else {
 			return response.json(result);
 		}
@@ -140,7 +145,7 @@ function createPost(request, response) {
 
 		manager.createImagePost(post, image, user_identifier, function(error, result) {
 			if (error) {
-				return response.status(500).json({"status": 500, "message": `ERROR ${error.code}: ${error}`});
+				return _uncatchError(error, response);
 			} else {
 				return response.status(200).json({"status": 200, "message": "New post successfully created"});
 			}
@@ -159,7 +164,7 @@ function deletePost(request, response) {
 	const user_identifier = request.session.passport['user'];
 	manager.deletePostByIdForUser(request.params.post_id, user_identifier, function(error, result) {
 		if (error) {
-			return response.status(500).json({"status": 500, "message": `ERROR ${error.code}: ${error}`});
+			return _uncatchError(error, response);
 		} else {
 			return response.status(200).json({"status": 200, "message": "Post successfully deleted"});
 		}
@@ -168,29 +173,51 @@ function deletePost(request, response) {
 
 function getPost(request, response) {
 	const identifier = request.params.post_id
-	console.log(identifier);
 	if (validator.isUUID(identifier) == false) {
-		return response.status(400).json({"status": 400, "message": "Invalid post_id parameter"});
+		return response.status(400).json({"status": 400, "message": "Invalid post identifier"});
 	}
 
-	manager.getPostForIdentifier(request.params.post_id, function(error, result) {
+	manager.getPostForIdentifier(identifier, function(error, result) {
 		if (error) {
-			console.log(error);
-			return response.status(500).json({"status": 500, "message": `ERROR ${error.code}: ${error}`});
+			return _uncatchError(error, response);
+		}
+
+		const post = result[0]
+		if (!post) {
+			return response.status(400).json({"status": 400, "message": "Invalid post identifier"});
+		} else {
+			return response.status(200).json({"status": 200, "post": post});
+		}
+	});
+};
+
+function getPostsForUser(request, response) {
+	const identifier = request.params.user_id
+	if (validator.isUUID(identifier) == false) {
+		return response.status(400).json({"status": 400, "message": "Invalid user identifier"});
+	}
+
+	manager.getPostsForUser(identifier, function(error, result) {
+		if (error) {
+			return _uncatchError(error, response);
 		} else {
 			return response.json(result);
 		}
 	});
 };
 
-	// return response.json({"id": request.params.post_id});
-
 function initPosts (app) {
 	initUploadFolder();
 
+	// GET all posts for all users.
 	app.get('/posts', getPosts);
+	// GET all posts for one user.
+	app.get('/posts/:user_id', getPostsForUser);
+	// POST with an active session to create a new post.
 	app.post('/post', passport.activeSessionRequired(), createPost);
+	// GET one single post by its identifier
 	app.get('/post/:post_id', getPost);
+	// DELETE with an active session to delete one single post.
 	app.delete('/post/:post_id', passport.activeSessionRequired(), deletePost);
 }
 

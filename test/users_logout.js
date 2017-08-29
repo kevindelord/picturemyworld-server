@@ -1,11 +1,8 @@
 // file:/test/users_logout.js
 'use strict';
 
-const chai      = require('chai');
-const server    = require('../app/index');
 const utils 	= require('./utils');
 const seed 		= require('./seed');
-const should 	= chai.should();
 
 describe('LOGOUT Users', () => {
 
@@ -22,11 +19,11 @@ describe('LOGOUT Users', () => {
 			// Login default user
 			let credentials = { username: seed.first_user.email, password: seed.first_user.password };
 			// First login
-			utils.loginUser(credentials, null, function(cookie) {
+			utils.loginUser(credentials, null, function(cookie, user) {
 				// Logout
 				utils.logoutUser(cookie, function() {
 					// Second login
-					utils.loginUser(credentials, null, function(cookie) {
+					utils.loginUser(credentials, null, function(cookie, user) {
 						done();
 					});
 				});
@@ -39,7 +36,7 @@ describe('LOGOUT Users', () => {
 			// Login default user
 			let credentials = { username: seed.first_user.email, password: seed.first_user.password };
 			// Login
-			utils.loginUser(credentials, null, function(cookie) {
+			utils.loginUser(credentials, null, function(cookie, user) {
 				// First logout
 				utils.logoutUser(cookie, function() {
 					// Second logout
@@ -52,7 +49,7 @@ describe('LOGOUT Users', () => {
 			// Login default user
 			let credentials = { username: seed.first_user.email, password: seed.first_user.password };
 			// Login
-			utils.loginUser(credentials, null, function(cookie) {
+			utils.loginUser(credentials, null, function(cookie, user) {
 				// First logout
 				utils.logoutUserWithError(null, done);
 			});

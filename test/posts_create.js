@@ -1,11 +1,8 @@
 // file:/test/posts_create.js
 'use strict';
 
-const chai		= require('chai');
-const server	= require('../app/index');
 const utils		= require('./utils');
 const seed 		= require('./seed');
-const should 	= chai.should();
 
 const parameters = ["title", "description", "ratio", "location", "lat", "lng", "date"];
 var _cookie = null
@@ -29,7 +26,7 @@ describe('CREATE Posts', () => {
 			utils.deleteAllPostsForUserEmail(seed.second_user.email, function() {
 				// Login with first seed user account.
 				let credentials = { username: seed.first_user.email, password: seed.first_user.password };
-				utils.loginUser(credentials, null, function(cookie) {
+				utils.loginUser(credentials, null, function(cookie, user) {
 					_cookie = cookie
 					done();
 				});
@@ -61,7 +58,7 @@ describe('CREATE Posts', () => {
 		it('should logout and login with another account and create a new post', (done) => {
 			utils.logoutUser(_cookie, function() {
 				let credentials = { username: seed.second_user.email, password: seed.second_user.password };
-				utils.loginUser(credentials, null, function(cookie) {
+				utils.loginUser(credentials, null, function(cookie, user) {
 					utils.createImagePost(seed.posts.second, seed.images.second, cookie, done);
 				});
 			});

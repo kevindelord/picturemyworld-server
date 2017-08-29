@@ -1,11 +1,8 @@
 // file:/test/users_delete.js
 'use strict';
 
-const chai      = require('chai');
-const server    = require('../app/index');
 const utils 	= require('./utils');
 const seed 		= require('./seed');
-const should 	= chai.should();
 
 describe('DELETE Users', () => {
 

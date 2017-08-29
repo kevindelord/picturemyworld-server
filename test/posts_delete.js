@@ -1,11 +1,8 @@
 // file:/test/posts_delete.js
 'use strict';
 
-const chai      = require('chai');
-const server    = require('../app/index');
 const utils 	= require('./utils');
 const seed 		= require('./seed');
-const should 	= chai.should();
 
 describe('DELETE Posts', () => {
 
@@ -16,8 +13,10 @@ describe('DELETE Posts', () => {
 			// #2 create first post and logout
 			// #3 create second user and login
 			// #4 create second post and logout
-			utils.createUserAndPost(seed.first_user, seed.posts.first, seed.images.first, function() {
-				utils.createUserAndPost(seed.second_user, seed.posts.second, seed.images.second, done);
+			utils.createUserAndPost(seed.first_user, seed.posts.first, seed.images.first, function(user) {
+				utils.createUserAndPost(seed.second_user, seed.posts.second, seed.images.second, function(user) {
+					done();
+				});
 			});
 		});
 	});
@@ -33,4 +32,8 @@ describe('DELETE Posts', () => {
 	// - Do not delete a non-existing post
 	// - Login with other account, create a post and logout. Login with other account and try to delete post.
 	// - No delete while logged out
+
+	// TODO:
+	// DELETE with an active session to delete one single post.
+	// app.delete('/post/:post_id', passport.activeSessionRequired(), deletePost);
 });

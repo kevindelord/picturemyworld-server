@@ -1,11 +1,8 @@
 // file:/test/users_create.js
 'use strict';
 
-const chai      = require('chai');
-const server    = require('../app/index');
 const utils 	= require('./utils');
 const seed 		= require('./seed');
-const should 	= chai.should();
 
 describe('CREATE Users', () => {
 
@@ -18,7 +15,9 @@ describe('CREATE Users', () => {
 		it('should POST a new user and GET its info', (done) => {
 			utils.createUser(seed.first_user, function() {
 				// should GET only 1 user
-				utils.checkNumberOfUsers(1, done);
+				utils.validateAllUsers(1, 200, function(users) {
+					done();
+				});
 			});
 		});
 	});

@@ -21,13 +21,27 @@ function createUser(user, callback) {
 };
 
 // Fetch a user by its email (unique in DB) with a prepared statement.
-function getUserByEmail(email, callback) {
+// Only the id and the password hash are required as this is an internal call to the DB.
+function authentificateUserByEmail(email, callback) {
 	const query = {
 		name: 'get-user-by-email',
-		text: 'SELECT id, password FROM users WHERE (email = $1);',
+		text: 'SELECT id, email, username, created_at, updated_at, password FROM users WHERE (email = $1);',
 		values: [
 			// Sanitize all user inputs.
 			sanitizer.sanitize(email)
+		]
+	};
+	executeQueryWithParameters(query, callback);
+};
+
+// Fetch a user by its identifier (unique in DB) with a prepared statement.
+function getUserByIdentifier(identifier, callback) {
+	const query = {
+		name: 'get-user-by-identifier',
+		text: 'SELECT id, email, username, created_at, updated_at FROM users WHERE (id = $1);',
+		values: [
+			// Sanitize all user inputs.
+			sanitizer.sanitize(identifier)
 		]
 	};
 	executeQueryWithParameters(query, callback);
@@ -92,7 +106,7 @@ function deleteAllPostsForUserEmail(email, callback) {
 		]
 	};
 	executeQueryWithParameters(query, callback);
-}
+};
 
 // Fetch all users with a prepared statement.
 function getUsers(callback) {
@@ -102,7 +116,7 @@ function getUsers(callback) {
 		values: []
 	};
 	executeQueryWithParameters(query, callback);
-}
+};
 
 // Fetch all posts with a prepared statement.
 function getPosts(callback) {
@@ -112,7 +126,19 @@ function getPosts(callback) {
 		values: []
 	};
 	executeQueryWithParameters(query, callback);
-}
+};
+
+// Fetch all posts related to a user by its id (unique in DB) with a prepared statement.
+function getPostsForUser(user_identifier, callback) {
+	const query = {
+		name: 'get-posts-by-user-identifier',
+		text: 'SELECT id, title, description, location, lat, lng, date, ratio, created_at, updated_at FROM posts WHERE (user_id_fkey = $1);',
+		values: [
+			sanitizer.sanitize(user_identifier)
+		]
+	};
+	executeQueryWithParameters(query, callback);
+};
 
 // Fetch a post with its id (unique in DB) with a prepared statement.
 function getPostForIdentifier(identifier, callback) {
@@ -124,7 +150,7 @@ function getPostForIdentifier(identifier, callback) {
 		]
 	};
 	executeQueryWithParameters(query, callback);
-}
+};
 
 // Create a new image post with a prepared statement.
 function createImagePost(post, image, user_identifier, callback) {
@@ -198,7 +224,7 @@ function executeQueryWithParameters(query, callback) {
 module.exports.createUser = createUser;
 module.exports.getUsers = getUsers;
 module.exports.getPosts = getPosts;
-module.exports.getUserByEmail = getUserByEmail;
+module.exports.authentificateUserByEmail = authentificateUserByEmail;
 module.exports.deleteUsersByEmails = deleteUsersByEmails;
 module.exports.createImagePost = createImagePost;
 module.exports.connectURL = connectURL;
@@ -206,3 +232,5 @@ module.exports.deleteAllPostsForUserEmail = deleteAllPostsForUserEmail;
 module.exports.deletePostsForIdentifiers = deletePostsForIdentifiers;
 module.exports.getPostForIdentifier = getPostForIdentifier;
 module.exports.deletePostForIdentifierAndUser = deletePostForIdentifierAndUser;
+module.exports.getPostsForUser = getPostsForUser;
+module.exports.getUserByIdentifier = getUserByIdentifier;

@@ -19,11 +19,11 @@ passport.serializeUser(function (user, callback) {
 })
 
 passport.deserializeUser(function (email, callback) {
-    postgreManager.getUserByEmail(email, callback);
+    postgreManager.authentificateUserByEmail(email, callback);
 })
 
 function verifyUser(email, password, callback) {
-    postgreManager.getUserByEmail(email, function (error, user) {
+    postgreManager.authentificateUserByEmail(email, function (error, user) {
         if (error) {
             return callback(error); // Unknown error
         }
@@ -35,6 +35,8 @@ function verifyUser(email, password, callback) {
         // Decrypt the local password and compare.
         bcrypt.compare(password, user.password, function(error, result) {
             if (result === true) {
+                // Make sure the password hash is not fowarded through the API.
+                delete user.password
                 return callback(null, user);
             } else {
                 return callback(null, false);

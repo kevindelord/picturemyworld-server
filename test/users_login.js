@@ -1,11 +1,8 @@
 // file:/test/users_login.js
 'use strict';
 
-const chai      = require('chai');
-const server    = require('../app/index');
 const utils 	= require('./utils');
 const seed 		= require('./seed');
-const should 	= chai.should();
 
 describe('LOGIN Users', () => {
 
@@ -21,7 +18,7 @@ describe('LOGIN Users', () => {
 		it('should log default user in', (done) => {
 			// Login default user
 			let credentials = { username: seed.first_user.email, password: seed.first_user.password };
-			utils.loginUser(credentials, null, function(cookie) {
+			utils.loginUser(credentials, null, function(cookie, user) {
 				done();
 			});
 		});
@@ -31,7 +28,7 @@ describe('LOGIN Users', () => {
 		it('should not log a user in if already logged in', (done) => {
 			// Login default user
 			let credentials = { username: seed.first_user.email, password: seed.first_user.password };
-			utils.loginUser(credentials, null, function(cookie) {
+			utils.loginUser(credentials, null, function(cookie, user) {
 				utils.loginUserWithErrorMessage(credentials, "Already logged in", cookie, done);
 			});
 		});
