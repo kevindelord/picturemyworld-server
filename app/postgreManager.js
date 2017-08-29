@@ -65,13 +65,13 @@ function deleteUsersByEmails(emails, callback) {
 };
 
 // Delete a post by its id (unique in DB) if it is related to the current user with a prepared statement.
-function deletePostForIdentifierAndUser(identifier, user_identifier, callback) {
+function deletePostForIdentifierAndUser(post_identifier, user_identifier, callback) {
 	const query = {
 		name: 'delete-post-by-identifier-for-user',
 		text: 'DELETE FROM posts WHERE (user_id_fkey = $1 AND id = $2);',
 		values: [
 			sanitizer.sanitize(user_identifier),
-			sanitizer.sanitize(identifier)
+			sanitizer.sanitize(post_identifier)
 		]
 	};
 	executeQueryWithParameters(query, callback);
@@ -152,8 +152,20 @@ function getPostForIdentifier(identifier, callback) {
 	executeQueryWithParameters(query, callback);
 };
 
+function latestPostForUser(user_identifier, callback) {
+	const query = {
+		name: 'get-latest-image-post-for-user',
+		text: 'SELECT id, title, description, location, lat, lng, date, ratio, created_at, updated_at FROM posts WHERE (user_id_fkey = $1)\
+				ORDER BY updated_at DESC LIMIT 1;',
+		values: [
+			sanitizer.sanitize(user_identifier)
+		]
+	};
+	executeQueryWithParameters(query, callback);
+};
+
 // Create a new image post with a prepared statement.
-function createImagePost(post, image, user_identifier, callback) {
+function createPost(post, image, user_identifier, callback) {
 	const query = {
 		name: 'create-image-post',
 		text: 'WITH post_key AS (\
@@ -226,7 +238,7 @@ module.exports.getUsers = getUsers;
 module.exports.getPosts = getPosts;
 module.exports.authentificateUserByEmail = authentificateUserByEmail;
 module.exports.deleteUsersByEmails = deleteUsersByEmails;
-module.exports.createImagePost = createImagePost;
+module.exports.createPost = createPost;
 module.exports.connectURL = connectURL;
 module.exports.deleteAllPostsForUserEmail = deleteAllPostsForUserEmail;
 module.exports.deletePostsForIdentifiers = deletePostsForIdentifiers;
@@ -234,3 +246,4 @@ module.exports.getPostForIdentifier = getPostForIdentifier;
 module.exports.deletePostForIdentifierAndUser = deletePostForIdentifierAndUser;
 module.exports.getPostsForUser = getPostsForUser;
 module.exports.getUserByIdentifier = getUserByIdentifier;
+module.exports.latestPostForUser = latestPostForUser;

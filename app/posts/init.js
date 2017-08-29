@@ -14,6 +14,25 @@ function _uncatchError(error, response) {
 	return response.status(500).json({"status": 500, "message": `ERROR ${error.code}: ${error}`}); // Unkown error
 };
 
+function _returnPostIfValid(error, result, response) {
+	if (error) {
+		return _uncatchError(error, response);
+	}
+
+	const post = result[0]
+	if (!post) {
+		return response.status(400).json({"status": 400, "message": "Invalid post identifier"});
+	} else {
+		return response.status(200).json({"status": 200, "post": post});
+	}
+};
+
+function _getLatestPostForUser(user_identifier, response) {
+	manager.latestPostForUser(user_identifier, function(error, result) {
+		return _returnPostIfValid(error, result, response);
+	});
+};
+
 const multerUploaded = multer({
 	dest: config.get("express.upload.destinationFolder"),
 	limits: {
@@ -143,11 +162,11 @@ function createPost(request, response) {
 			return response.status(400).json({"status": 400, "message": `Invalid or missing '${invalidParameter}' parameter`});
 		}
 
-		manager.createImagePost(post, image, user_identifier, function(error, result) {
+		manager.createPost(post, image, user_identifier, function(error, result) {
 			if (error) {
 				return _uncatchError(error, response);
 			} else {
-				return response.status(200).json({"status": 200, "message": "New post successfully created"});
+				return _getLatestPostForUser(user_identifier, response);
 			}
 		});
 	});
@@ -177,17 +196,8 @@ function getPost(request, response) {
 		return response.status(400).json({"status": 400, "message": "Invalid post identifier"});
 	}
 
-	manager.getPostForIdentifier(identifier, function(error, result) {
-		if (error) {
-			return _uncatchError(error, response);
-		}
-
-		const post = result[0]
-		if (!post) {
-			return response.status(400).json({"status": 400, "message": "Invalid post identifier"});
-		} else {
-			return response.status(200).json({"status": 200, "post": post});
-		}
+	manager.getPostForIdentifier(identifier, function(error, result) {;
+		return _returnPostIfValid(error, result, response);
 	});
 };
 
@@ -219,6 +229,9 @@ function initPosts (app) {
 	app.get('/post/:post_id', getPost);
 	// DELETE with an active session to delete one single post.
 	app.delete('/post/:post_id', passport.activeSessionRequired(), deletePost);
-}
+	// TODO:
+	// app.get('/posts/:user_id/latest', function); // another user.
+	// app.get('/post/latest', passport.activeSessionRequired(), function); // current user.
+};
 
 module.exports = initPosts;

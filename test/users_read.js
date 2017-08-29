@@ -80,7 +80,7 @@ describe('READ Users', () => {
 
 	describe('GET /user/:user_id - fetch information about an(other) account', () => {
 		it('should GET valid user info data while logged out', (done) => {
-			utils.createUserAndPost(seed.first_user, seed.posts.first, seed.images.first, function(user) {
+			utils.createUserAndPost(seed.first_user, seed.posts.first, seed.images.first, function(user, post) {
 				utils.getUserForIdentifier(user.id, null, 200, null, function(retrieved_user) {
 					utils.usersShouldBeValidAndEqual(user, retrieved_user, done);
 					utils.usersShouldBeValidAndEqual(user, seed.first_user, null);
@@ -89,7 +89,7 @@ describe('READ Users', () => {
 		});
 
 		it('should GET valid user info data while logged in', (done) => {
-			utils.createUserAndPost(seed.first_user, seed.posts.first, seed.images.first, function(user) {
+			utils.createUserAndPost(seed.first_user, seed.posts.first, seed.images.first, function(user, post) {
 				let credentials = { username: seed.first_user.email, password: seed.first_user.password };
 				utils.loginUser(credentials, null, function(cookie, logged_in_user) {
 					utils.getUserForIdentifier(user.id, cookie, 200, null, function(retrieved_user) {
@@ -123,8 +123,8 @@ describe('READ Users', () => {
 		});
 
 		it('should GET valid data about another user (not the one logged in)', (done) => {
-			utils.createUserAndPost(seed.first_user, seed.posts.first, seed.images.first, function(first_user) {
-				utils.createUserAndPost(seed.second_user, seed.posts.second, seed.images.second, function(second_user) {
+			utils.createUserAndPost(seed.first_user, seed.posts.first, seed.images.first, function(first_user, post) {
+				utils.createUserAndPost(seed.second_user, seed.posts.second, seed.images.second, function(second_user, post) {
 					let credentials = { username: seed.second_user.email, password: seed.second_user.password };
 					utils.loginUser(credentials, null, function(cookie, user) {
 						utils.getUserForIdentifier(first_user.id, cookie, 200, null, function(retrieved_user) {

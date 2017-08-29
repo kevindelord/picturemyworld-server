@@ -43,6 +43,7 @@ function validateAllUsers(number, errorCode, callback) {
 		.end(function(error, response) {
 			should.not.exist(error);
 			should.exist(response);
+			response.body.should.not.have.property('message');
 			response.body.should.have.property('status').equal(errorCode);
 			response.body.should.have.property('users');
 			response.body.users.should.be.a('array');
@@ -84,9 +85,9 @@ function createUserAndPost(user, post, image, callback) {
 		// Login with first user account
 		let credentials = { username: user.email, password: user.password };
 		loginUser(credentials, null, function(cookie, user) {
-			createImagePost(post, image, cookie, function() {
+			createPost(post, image, cookie, function(post) {
 				logoutUser(cookie, function() {
-					callback(user);
+					callback(user, post);
 				});
 			});
 		});
@@ -108,14 +109,15 @@ function getUserForIdentifier(identifier, cookie, errorCode, errorMessage, callb
 			should.not.exist(error);
 			should.exist(response);
 			response.body.should.have.property('status').equal(errorCode);
-			if (errorMessage) {
-				response.body.should.have.property('message').equal(errorMessage);
-				callback();
-			} else {
+			if (errorCode == 200) {
+				response.body.should.not.have.property('message');
 				response.body.should.have.property('user');
 				response.body.user.should.be.a('Object');
 				usersShouldBeValidAndEqual(response.body.user, null, null);
 				callback(response.body.user);
+			} else {
+				response.body.should.have.property('message').equal(errorMessage);
+				callback();
 			}
 	});
 };
@@ -186,6 +188,7 @@ function _login(credentials, code, message, cookie, callback) {
 			should.exist(response);
 			response.body.should.have.property('status').equal(code);
 			if (code == 200) {
+				response.body.should.not.have.property('message');
 				response.body.should.have.property('user');
 				response.body.user.should.be.a('Object');
 				usersShouldBeValidAndEqual(response.body.user, null, null);
@@ -224,15 +227,15 @@ function _logout(cookie, code, message, callback) {
 
 // Image Post
 
-function createImagePost(json, imagePath, cookie, callback) {
-	_createImagePost(json, imagePath, cookie, 200, 'New post successfully created', callback);
+function createPost(json, imagePath, cookie, callback) {
+	_createPost(json, imagePath, cookie, 200, null, callback);
 };
 
-function createImagePostWithError(json, imagePath, cookie, errorCode, errorMessage, callback) {
-	_createImagePost(json, imagePath, cookie, errorCode, errorMessage, callback);
+function createPostWithError(json, imagePath, cookie, errorCode, errorMessage, callback) {
+	_createPost(json, imagePath, cookie, errorCode, errorMessage, callback);
 };
 
-function _createImagePost(json, imagePath, cookie, errorCode, errorMessage, callback) {
+function _createPost(json, imagePath, cookie, errorCode, errorMessage, callback) {
 	var req = request.post('/post').set('Cookie', cookie)
 	for (var key in json) {
 		if (json.hasOwnProperty(key) && json[key]) {
@@ -248,8 +251,16 @@ function _createImagePost(json, imagePath, cookie, errorCode, errorMessage, call
 			should.not.exist(error);
 			should.exist(response);
 			response.body.should.have.property('status').equal(errorCode);
-			response.body.should.have.property('message').equal(errorMessage);
-			callback();
+			if (errorCode == 200) {
+				response.body.should.have.property('post');
+				response.body.should.not.have.property('message');
+				response.body.post.should.be.a('Object');
+				postsShouldBeValidAndEqual(response.body.post, null, null);
+				callback(response.body.post);
+			} else {
+				response.body.should.have.property('message').equal(errorMessage);
+				callback();
+			}
 	});
 };
 
@@ -269,21 +280,14 @@ function getAllPosts(expectedNumber, cookie, callback) {
 };
 
 function getPostForIdentifier(identifier, cookie, callback) {
-	request
-		.get('/post/' + identifier)
-		.set('Cookie', cookie)
-		.expect('Content-Type', /json/)
-		.expect(200)
-		.end(function(error, response) {
-			should.not.exist(error);
-			should.exist(response);
-			response.body.should.not.have.property('status');
-			response.body.should.be.a('Object');
-			callback(response.body);
-	});
+	_getPostForIdentifier(identifier, cookie, 200, null, callback);
 };
 
 function getPostForIdentifierWithError(identifier, cookie, errorCode, errorMessage, callback) {
+	_getPostForIdentifier(identifier, cookie, errorCode, errorMessage, callback);
+};
+
+function _getPostForIdentifier(identifier, cookie, errorCode, errorMessage, callback) {
 	request
 		.get('/post/' + identifier)
 		.set('Cookie', cookie)
@@ -293,8 +297,16 @@ function getPostForIdentifierWithError(identifier, cookie, errorCode, errorMessa
 			should.not.exist(error);
 			should.exist(response);
 			response.body.should.have.property('status').equal(errorCode);
-			response.body.should.have.property('message').equal(errorMessage);
-			callback();
+			if (errorCode == 200) {
+				response.body.should.not.have.property('message');
+				response.body.should.have.property('post');
+				response.body.post.should.be.a('Object');
+				postsShouldBeValidAndEqual(response.body.post, null, null);
+				callback(response.body.post);
+			} else {
+				response.body.should.have.property('message').equal(errorMessage);
+				callback();
+			}
 	});
 };
 
@@ -311,11 +323,31 @@ function postsShouldBeValidAndEqual(post, seed_post, callback) {
 	post.should.have.property('updated_at');
 	post.updated_at.should.be.a('string');
 	validator.isISO8601(post.updated_at);
-	delete post.id;
-	delete post.updated_at;
-	delete post.created_at;
-	// All other attributes
-	post.should.eql(seed_post);
+	// ratio
+	post.should.have.property('ratio');
+	// lng
+	post.should.have.property('lng');
+	// lat
+	post.should.have.property('lat');
+	// location
+	post.should.have.property('location');
+	// title
+	post.should.have.property('title');
+	// description
+	post.should.have.property('description');
+	// date
+	post.should.have.property('date');
+	post.date.should.be.a('string');
+	validator.isISO8601(post.date);
+
+	if (seed_post) {
+		if (!seed_post.id) { delete post.id; }
+		if (!seed_post.updated_at) { delete post.updated_at; }
+		if (!seed_post.created_at) { delete post.created_at; }
+
+		// All other attributes
+		post.should.eql(seed_post);
+	}
 
 	if (callback) {
 		callback();
@@ -326,7 +358,7 @@ function postsShouldBeValidAndEqual(post, seed_post, callback) {
 // Module exports
 //
 
-module.exports.createImagePost = createImagePost;
+module.exports.createPost = createPost;
 module.exports.deleteAllPostsForUserEmail = deleteAllPostsForUserEmail;
 module.exports.loginUserWithErrorMessage = loginUserWithErrorMessage;
 module.exports.loginUser = loginUser;
@@ -336,7 +368,7 @@ module.exports.createUser = createUser;
 module.exports.logoutUser = logoutUser;
 module.exports.logoutUserWithError = logoutUserWithError;
 module.exports.deleteUsersByEmails = deleteUsersByEmails;
-module.exports.createImagePostWithError = createImagePostWithError;
+module.exports.createPostWithError = createPostWithError;
 module.exports.getAllPosts = getAllPosts;
 module.exports.createUserAndPost = createUserAndPost;
 module.exports.getPostForIdentifier = getPostForIdentifier;

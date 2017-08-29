@@ -13,8 +13,8 @@ describe('DELETE Posts', () => {
 			// #2 create first post and logout
 			// #3 create second user and login
 			// #4 create second post and logout
-			utils.createUserAndPost(seed.first_user, seed.posts.first, seed.images.first, function(user) {
-				utils.createUserAndPost(seed.second_user, seed.posts.second, seed.images.second, function(user) {
+			utils.createUserAndPost(seed.first_user, seed.posts.first, seed.images.first, function(user, post) {
+				utils.createUserAndPost(seed.second_user, seed.posts.second, seed.images.second, function(user, post) {
 					done();
 				});
 			});
